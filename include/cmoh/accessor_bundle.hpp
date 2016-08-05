@@ -43,7 +43,8 @@ namespace cmoh {
  *
  * TODO: further explanation
  *
- * TODO: mention of factory
+ * Users are discouraged from constructing accessor bundles directly. Usexi
+ * `bundle()` instread as a factory.
  */
 template <
     typename ...Accessors
@@ -95,6 +96,22 @@ public:
 
     // TODO: access methods
 };
+
+
+/**
+ * Construct an accessor bundle from a bunch of accessors
+ *
+ * \returns an accessor bundle holding all the accessors supplied
+ */
+template <
+    typename ...Accessors
+>
+accessor_bundle<Accessors...>
+bundle(
+    Accessors... accessors ///< accessors to bundle
+) {
+    return accessor_bundle<Accessors...>(accessors...);
+}
 
 
 }
