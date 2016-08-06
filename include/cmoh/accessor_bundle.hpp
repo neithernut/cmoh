@@ -27,6 +27,7 @@
 
 // std includes
 #include <type_traits>
+#include <utility>
 
 // local includes
 #include <cmoh/utils.hpp>
@@ -111,7 +112,30 @@ public:
         return _accessor.get(obj);
     }
 
-    // TODO: setters
+    /**
+     * Set the value of a specific attribute on an object
+     */
+    template <typename Attribute>
+    typename std::enable_if<
+        !std::is_same<Attribute, typename accessor::attr>::value
+    >::type
+    set(
+        object_type& obj, ///< object on which to set the attribute
+        typename Attribute::type&& value ///< value to set
+    ) const {
+        _next.set<Attribute>(obj, std::forward<typename Attribute::type>(value));
+    }
+
+    template <typename Attribute>
+    typename std::enable_if<
+        std::is_same<Attribute, typename accessor::attr>::value
+    >::type
+    set(
+        object_type& obj, ///< object on which to set the attribute
+        typename Attribute::type&& value ///< value to set
+    ) const {
+        _accessor.set(obj, std::forward<typename Attribute::type>(value));
+    }
 };
 
 
@@ -133,7 +157,18 @@ public:
         );
     }
 
-    // TODO: setters
+    // accept whatever comes in and error out
+    template <typename ObjectType, typename Value>
+    void
+    get(
+        ObjectType const& obj,
+        Value&& value
+    ) const {
+        static_assert(
+            true,
+            "The attribute can not be accessed via this bundle."
+        );
+    }
 };
 
 
