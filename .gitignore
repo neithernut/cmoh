@@ -5,4 +5,5 @@ CTestTestfile.cmake
 Makefile
 Testing
 cmake_install.cmake
+install_manifest.txt
 
