@@ -100,7 +100,7 @@ struct attribute {
             get(
                 object_type const& obj ///< object from which to get the value
             ) const {
-                return obj->*Getter();
+                return (obj.*Getter)();
             }
 
             /**
@@ -112,7 +112,7 @@ struct attribute {
                 type&& value ///< value to set
             ) const {
                 static_assert(Setter != nullptr, "No setter defined for this attribute");
-                obj->*Setter(std::forward(value));
+                (obj.*Setter)(std::forward(value));
             }
         };
     };
