@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(cmoh CXX)
 
+# we require C++11
+set(CMAKE_CXX_STANDARD 11)
 
 add_library(cmoh INTERFACE)
 target_include_directories(cmoh INTERFACE
