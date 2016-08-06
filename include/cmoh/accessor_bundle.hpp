@@ -98,7 +98,7 @@ public:
     get(
         object_type const& obj ///< object from which to get the value
     ) const {
-        return _next.get<Attribute>(obj);
+        return _next.template get<Attribute>(obj);
     }
 
     template <typename Attribute>
@@ -123,7 +123,7 @@ public:
         object_type& obj, ///< object on which to set the attribute
         typename Attribute::type&& value ///< value to set
     ) const {
-        _next.set<Attribute>(obj, std::forward<typename Attribute::type>(value));
+        _next.template set<Attribute>(obj, std::forward<typename Attribute::type>(value));
     }
 
     template <typename Attribute>
