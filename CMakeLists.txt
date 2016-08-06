@@ -13,3 +13,8 @@ target_include_directories(cmoh INTERFACE
 )
 
 
+# examples/tests
+enable_testing()
+add_subdirectory(examples)
+
+
