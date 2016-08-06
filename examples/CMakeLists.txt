@@ -12,3 +12,9 @@ add_test(
     COMMAND attributes_example --exe $<TARGET_FILE:attributes_example>
 )
 
+
+# provide a convenience target to build all examples
+add_custom_target(examples DEPENDS
+    attributes_example
+)
+
