@@ -112,7 +112,7 @@ struct attribute {
                 type&& value ///< value to set
             ) const {
                 static_assert(Setter != nullptr, "No setter defined for this attribute");
-                (obj.*Setter)(std::forward(value));
+                (obj.*Setter)(std::forward<type>(value));
             }
         };
     };
