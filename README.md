@@ -19,3 +19,29 @@ at some point. For now, have a look at the examples to get an idea of how things
 are done from a user's point of view.
 
 
+Licensing
+---------
+
+This library is licensed under the MIT license. Have a look at the LICENSE file
+for more information. The following paragraphs are a rationale for the choice of
+the license by the original author, Julian Ganz:
+
+The license was chosen because this is an infrastructure project. I primarily
+intended to make my own life, and potentially the life of others, easier. This
+also includes future possible work on proprietary products. Hence, I chose a
+permissive license.
+
+I am aware of arguments that permissive licenses would diminish contributions
+from corporate projects using that code. I'm fine with this. This is a
+(personal) infrastructure project, a cathedral, not a bazaar. My goal is not to
+attract a large community of developers creeping in a ton of features.
+
+As for corporations which keep fixes or adjustments for themselves while ripping
+of the work of others: I have no interest in working with idiots who do not
+understand the benefits of sharing the effort of developing and maintaining a
+piece of software. Let them write their parallel workarounds and extensions. Let
+them experience the pain of maintaining them and eventually being unable to
+trivially upgrade to a new version. Let them waste their precious manpower on
+that.
+
+
