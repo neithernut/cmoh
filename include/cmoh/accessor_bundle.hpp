@@ -84,7 +84,34 @@ public:
     accessor_bundle(accessor_bundle&&) = default;
     accessor_bundle() = delete;
 
-    // TODO: access methods
+    /**
+     * Get the value of a specific attribute from an object
+     *
+     * \returns the value of the attribute
+     */
+    template <typename Attribute>
+    typename std::enable_if<
+        !std::is_same<Attribute, typename accessor::attr>::value,
+        typename Attribute::type
+    >::type
+    get(
+        object_type const& obj ///< object from which to get the value
+    ) const {
+        return _next.get<Attribute>(obj);
+    }
+
+    template <typename Attribute>
+    typename std::enable_if<
+        std::is_same<Attribute, typename accessor::attr>::value,
+        typename Attribute::type
+    >::type
+    get(
+        object_type const& obj ///< object from which to get the value
+    ) const {
+        return _accessor.get(obj);
+    }
+
+    // TODO: setters
 };
 
 
@@ -94,7 +121,19 @@ class accessor_bundle<> {
 public:
     typedef void object_type;
 
-    // TODO: access methods
+    // accept whatever comes in and error out
+    template <typename Attribute, typename ObjectType>
+    typename Attribute::type
+    get(
+        ObjectType const& obj
+    ) const {
+        static_assert(
+            true,
+            "The attribute can not be accessed via this bundle."
+        );
+    }
+
+    // TODO: setters
 };
 
 
