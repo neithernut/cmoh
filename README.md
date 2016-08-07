@@ -19,6 +19,14 @@ at some point. For now, have a look at the examples to get an idea of how things
 are done from a user's point of view.
 
 
+Using this library
+------------------
+
+As this is a header-only library, no linking is required. Make sure you add
+`<installation_prefix>/include` to your include directories. Support for CMake
+and pkg-config will follow at some point.
+
+
 Licensing
 ---------
 
