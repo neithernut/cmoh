@@ -34,6 +34,22 @@ CMOH makes heavy use of templates and C++11 features. Hence, a C++11 compliant
 tool chain is required.
 
 
+Installation
+------------
+
+Installation is done using CMake. Run
+
+```
+cmake <path-to-source>
+make install
+```
+in the directory in which you indent to set up the library. In-tree builds are
+supported (supply `.` as the source directory).
+
+The examples can also be build using CMake. Once you have initialized the build
+environment, run `make examples`.
+
+
 Licensing
 ---------
 
