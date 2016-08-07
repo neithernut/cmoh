@@ -27,6 +27,13 @@ As this is a header-only library, no linking is required. Make sure you add
 and pkg-config will follow at some point.
 
 
+Dependencies
+------------
+
+CMOH makes heavy use of templates and C++11 features. Hence, a C++11 compliant
+tool chain is required.
+
+
 Licensing
 ---------
 
