@@ -79,8 +79,9 @@ public:
         "All accessors in a bundle must have the same object type"
     );
 
-    accessor_bundle(accessor accessor, Accessors... accessors) :
-            _accessor(accessor), _next(accessors...) {};
+    accessor_bundle(accessor current, Accessors... accessors) :
+            _accessor(std::forward<accessor>(current)),
+            _next(std::forward<Accessors>(accessors)...) {};
     accessor_bundle(accessor_bundle const&) = default;
     accessor_bundle(accessor_bundle&&) = default;
     accessor_bundle() = delete;
