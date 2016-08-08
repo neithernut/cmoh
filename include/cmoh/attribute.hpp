@@ -55,6 +55,16 @@ struct attribute {
     typedef typename std::remove_cv<Attr>::type type;
     static constexpr bool is_const = std::is_const<Attr>::value;
 
+    /**
+     * Attribute accessor using methods
+     *
+     * This accessor provides access to the attribute via methods of the target
+     * C++ struct/class. It is constructed from an appropriate getter and,
+     * optionally, a setter.
+     *
+     * Users are discouraged from constructing method accessors directly. Use
+     * one of the `accessor()` overloads provided by the attribute instead.
+     */
     template <
         typename ObjType, ///< type of the class or struct with the attribute
         typename SetterArg ///< effective type of the setter argument
