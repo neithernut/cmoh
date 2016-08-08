@@ -185,7 +185,7 @@ accessor_bundle<Accessors...>
 bundle(
     Accessors... accessors ///< accessors to bundle
 ) {
-    return accessor_bundle<Accessors...>(accessors...);
+    return accessor_bundle<Accessors...>(std::forward<Accessors>(accessors)...);
 }
 
 
