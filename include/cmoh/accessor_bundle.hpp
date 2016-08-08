@@ -181,6 +181,8 @@ public:
 template <
     typename ...Accessors
 >
+constexpr
+const
 accessor_bundle<Accessors...>
 bundle(
     Accessors... accessors ///< accessors to bundle
