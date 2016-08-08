@@ -44,8 +44,8 @@ int main(int argc, char* argv[]) {
     // From the attributes we pull accessors for a concrete C++ type and bundle
     // them in an accessor bundle.
     auto accessors = bundle(
-        name::binding<person>::methods<&person::name, &person::set_name>(),
-        age::binding<person>::methods<&person::age>()
+        name::accessor<person>(&person::name, &person::set_name),
+        age::accessor<person>(&person::age)
     );
 
     person p;
