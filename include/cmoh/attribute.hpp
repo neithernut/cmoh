@@ -122,6 +122,7 @@ struct attribute {
         typename ObjType ///< type of the class or struct with the attribute
     >
     static
+    constexpr
     method_accessor<ObjType, type>
     accessor(
         typename method_accessor<ObjType,type>::getter getter,
@@ -135,6 +136,7 @@ struct attribute {
         typename ObjType ///< type of the class or struct with the attribute
     >
     static
+    constexpr
     method_accessor<ObjType, type const&>
     accessor(
         typename method_accessor<ObjType,type const&>::getter getter,
@@ -148,6 +150,7 @@ struct attribute {
         typename ObjType ///< type of the class or struct with the attribute
     >
     static
+    constexpr
     method_accessor<ObjType, type&&>
     accessor(
         typename method_accessor<ObjType,type&&>::getter getter,
