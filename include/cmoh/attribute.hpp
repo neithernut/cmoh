@@ -94,9 +94,48 @@ struct attribute {
             (obj.*_setter)(std::forward<type>(value));
         }
     private:
-        const getter _getter;
-        const setter _setter;
+        getter _getter;
+        setter _setter;
     };
+
+    // overload for creating a method accessor
+    template <
+        typename ObjType ///< type of the class or struct with the attribute
+    >
+    static
+    method_accessor<ObjType, type>
+    accessor(
+        typename method_accessor<ObjType,type>::getter getter,
+        typename method_accessor<ObjType,type>::setter setter = nullptr
+    ) {
+        return method_accessor<ObjType,type>(getter, setter);
+    }
+
+    // overload for creating a method accessor
+    template <
+        typename ObjType ///< type of the class or struct with the attribute
+    >
+    static
+    method_accessor<ObjType, type const&>
+    accessor(
+        typename method_accessor<ObjType,type const&>::getter getter,
+        typename method_accessor<ObjType,type const&>::setter setter
+    ) {
+        return method_accessor<ObjType,type const&>(getter, setter);
+    }
+
+    // overload for creating a method accessor
+    template <
+        typename ObjType ///< type of the class or struct with the attribute
+    >
+    static
+    method_accessor<ObjType, type&&>
+    accessor(
+        typename method_accessor<ObjType,type&&>::getter getter,
+        typename method_accessor<ObjType,type&&>::setter setter
+    ) {
+        return method_accessor<ObjType,type&&>(getter, setter);
+    }
 };
 }
 
