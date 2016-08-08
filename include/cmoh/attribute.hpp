@@ -45,8 +45,17 @@ namespace cmoh {
  * since the cmoh system relies on each attribute declaration being another
  * type.
  *
- * The attributes themselves are not bound to a C++ type. Attributes may be
- * grouped together in namespaces or stucts, each representing an interface.
+ * The attributes themselves are not bound to a C++ type. Attributes do,
+ * however, provide the `accessor()` static method for creating appropriate
+ * types of accessors for accessing attributes in objects of a specific C++
+ * type. These accessors provide a method for getting the attribute's value and
+ * may provide a method for setting the attribute:
+ *
+ *     type get(object_type const& obj) const;
+ *     void set(object_type& obj, type&& value);
+ *
+ * Attributes may be grouped together in namespaces or stucts, each representing
+ * an interface.
  */
 template <
     typename Attr ///< type of the attribute itself
