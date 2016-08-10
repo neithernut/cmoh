@@ -104,6 +104,19 @@ struct disjunction<Item0, Items...> {
 };
 
 
+/**
+ * Test whether a type occurs in a template parameter pack
+ *
+ * Instantiations of this struct contain a static member `value`, which will
+ * be `true` if `Compare` occurs in `Types` and false otherwise.
+ */
+template <
+    typename Compare, ///< Type to compare against items in `Types`
+    typename ...Types ///< Types against which to compare `Compare` against
+>
+using contains = disjunction<std::is_same<Compare, Types>...>;
+
+
 }
 }
 
