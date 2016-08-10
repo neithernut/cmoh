@@ -28,6 +28,9 @@
 // std includes
 #include <utility>
 
+// local includes
+#include <cmoh/utils.hpp>
+
 
 namespace cmoh {
 
@@ -57,6 +60,19 @@ struct constructor {
             )...
         };
     }
+
+    /**
+     * Check whether the constructor can be invoked using some attributes
+     *
+     * Instantiations provide a member `value` which is `true` if the attributes
+     * are sufficient for constructing an object and false otherwise.
+     */
+    template <
+        typename ...PassedAttributes ///< attributes availible for construction
+    >
+    using is_initializable_from = util::conjunction<
+        typename util::contains<Attributes, PassedAttributes...>...
+    >;
 };
 
 
