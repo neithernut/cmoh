@@ -80,6 +80,30 @@ struct conjunction<Item0, Items...> {
 };
 
 
+/**
+ * Logical disjunction of type traits `Items`
+ *
+ * Providing that each of the `Items` types provides a member `value` of type
+ * bool, this type provides a member `value` of type bool with the value of the
+ * logical disjunction of each of the values taken from the parameters.
+ *
+ * This template mirrors a utility which is expected to ship with C++17
+ * compliant STL implementations.
+ */
+template <
+    typename ...Items
+>
+struct disjunction : std::false_type {};
+
+template <
+    typename Item0,
+    typename ...Items
+>
+struct disjunction<Item0, Items...> {
+    static constexpr bool value = Item0::value || disjunction<Items...>::value;
+};
+
+
 }
 }
 
