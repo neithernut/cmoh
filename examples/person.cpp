@@ -28,5 +28,4 @@ std::string person::name() const { return _name; }
 void person::set_name(std::string const& name) { _name = name; }
 
 unsigned int person::age() const { return _age; }
-void person::set_age(unsigned int age) { _age = age; }
 

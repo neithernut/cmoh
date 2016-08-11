@@ -40,7 +40,6 @@ public:
     void set_name(std::string const& name);
 
     unsigned int age() const;
-    void set_age(unsigned int age);
 
 private:
     std::string _name;
