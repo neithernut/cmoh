@@ -26,6 +26,7 @@
 
 
 namespace cmoh {
+namespace util {
 
 
 /**
@@ -55,6 +56,7 @@ struct count<> {
 };
 
 
+}
 }
 
 
