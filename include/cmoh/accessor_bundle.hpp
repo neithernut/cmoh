@@ -70,7 +70,7 @@ public:
      * The C++ type which may be accessed using the accessor bundle
      */
     typedef typename std::conditional<
-        count<Accessors...>::value == 0,
+        util::count<Accessors...>::value == 0,
         typename accessor::object_type,
         typename next::object_type
     >::type object_type;
