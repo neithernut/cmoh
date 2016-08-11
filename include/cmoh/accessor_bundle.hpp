@@ -37,6 +37,26 @@ namespace cmoh {
 
 
 /**
+ * Check whether a type can construct an object from some attributes
+ *
+ * Unlike attributes and methods, constructors are not selected explicitly by
+ * the user. Instead, an accessor bundle has to select one of potentially
+ * multiple constructors.
+ *
+ * Constructors are expected to feature a facility for testing whether a set of
+ * attributes is sufficient for calling the constructor. We cannot/don't want to
+ * rely on such a facility for all accessor types. Instead, we require each
+ * constructor type to specialize `cmoh::is_initializable_from` to perform the
+ * actual query.
+ */
+template <
+    typename SupposedConstructor, ///< type which _may_ be a constructor type
+    typename ...PassedAttributes ///< attributes available for construction
+>
+struct is_initializable_from : std::false_type {};
+
+
+/**
  * Check whether an accessor accesses a specific attribute
  *
  * This checks whether the accessor provided features a type `attr` identical to
