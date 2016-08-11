@@ -44,7 +44,7 @@ namespace cmoh {
  *
  * TODO: further explanation
  *
- * Users are discouraged from constructing accessor bundles directly. Usexi
+ * Users are discouraged from constructing accessor bundles directly. Use
  * `bundle()` instread as a factory.
  */
 template <
