@@ -123,10 +123,23 @@ struct attribute {
     >
     static
     constexpr
-    method_accessor<ObjType, type>
+    typename std::enable_if<is_const, method_accessor<ObjType, type>>::type
+    accessor(
+        typename method_accessor<ObjType,type>::getter getter
+    ) {
+        return method_accessor<ObjType,type>(getter, nullptr);
+    }
+
+    // overload for creating a method accessor
+    template <
+        typename ObjType ///< type of the class or struct with the attribute
+    >
+    static
+    constexpr
+    typename std::enable_if<!is_const, method_accessor<ObjType, type>>::type
     accessor(
         typename method_accessor<ObjType,type>::getter getter,
-        typename method_accessor<ObjType,type>::setter setter = nullptr
+        typename method_accessor<ObjType,type>::setter setter
     ) {
         return method_accessor<ObjType,type>(getter, setter);
     }
@@ -137,7 +150,10 @@ struct attribute {
     >
     static
     constexpr
-    method_accessor<ObjType, type const&>
+    typename std::enable_if<
+        !is_const,
+        method_accessor<ObjType, type const&>
+    >::type
     accessor(
         typename method_accessor<ObjType,type const&>::getter getter,
         typename method_accessor<ObjType,type const&>::setter setter
@@ -151,7 +167,7 @@ struct attribute {
     >
     static
     constexpr
-    method_accessor<ObjType, type&&>
+    typename std::enable_if<!is_const, method_accessor<ObjType, type&&>>::type
     accessor(
         typename method_accessor<ObjType,type&&>::getter getter,
         typename method_accessor<ObjType,type&&>::setter setter
