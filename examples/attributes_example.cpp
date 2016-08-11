@@ -62,6 +62,9 @@ int main(int argc, char* argv[]) {
     // Re-read the attributes to demonstrate they have indeed changed
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
     std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
+    if (accessors.get<name>(p) != "Hans Wurst") {
+        return 1;
+    }
 
     return 0;
 }
