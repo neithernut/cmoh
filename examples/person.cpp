@@ -24,8 +24,14 @@
 #include "person.hpp"
 
 
+person::person(std::chrono::system_clock::time_point const& birthday) :
+    _birthday(birthday) {}
+
 std::string person::name() const { return _name; }
 void person::set_name(std::string const& name) { _name = name; }
 
-unsigned int person::age() const { return _age; }
+std::chrono::hours person::age() const {
+    auto const diff = decltype(_birthday)::clock::now() - _birthday;
+    return std::chrono::duration_cast<std::chrono::hours>(diff);
+}
 
