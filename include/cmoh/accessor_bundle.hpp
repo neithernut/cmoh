@@ -37,6 +37,31 @@ namespace cmoh {
 
 
 /**
+ * Check whether an accessor accesses a specific attribute
+ *
+ * This checks whether the accessor provided features a type `attr` identical to
+ * the attribute provided.
+ */
+template <
+    typename Accessor, ///< accessor to test for the attribute
+    typename Attribute, ///< attribute to be accessed
+    typename = void
+>
+struct accesses_attribute : std::false_type {};
+
+// Specialization for accessors featuring a type `attr`
+template <
+    typename Accessor,
+    typename Attribute
+>
+struct accesses_attribute<
+    Accessor,
+    Attribute,
+    util::void_t<typename Accessor::attr>
+> : std::is_same<Attribute, typename Accessor::attr> {};
+
+
+/**
  * Accessor bundle
  *
  * Instantiations of this template bundle accessors and make them conveniently
