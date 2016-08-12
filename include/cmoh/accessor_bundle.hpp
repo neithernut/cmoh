@@ -109,6 +109,33 @@ struct accessor_bundle {
 
 
     /**
+     * Set the value of a specific attribute on an object
+     */
+    template <
+        typename ...Attributes ///< attributes from which to construct an object
+    >
+    object_type
+    construct(
+        typename Attributes::type&&... values ///< value to set
+    ) const {
+        auto constructor = _accessors.
+            template get<is_initializable_from<Accessors, Attributes...>...>();
+
+        // construct the object itself
+        auto retval{constructor.construct<Attributes...>(
+            std::forward<typename Attributes::type>(values)...
+        )};
+
+        initialize_if_unused<decltype(constructor), Attributes...>(
+            retval,
+            std::forward<typename Attributes::type>(values)...
+        );
+
+        return retval;
+    }
+
+
+    /**
      * Get the value of a specific attribute from an object
      *
      * \returns the value of the attribute
