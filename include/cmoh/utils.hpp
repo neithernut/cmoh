@@ -117,6 +117,17 @@ template <
 using contains = disjunction<std::is_same<Compare, Types>...>;
 
 
+/**
+ * Predeclaration of the C++17 std::void_t
+ *
+ * Used for SFINAE.
+ */
+template <
+    typename...
+>
+using void_t = void;
+
+
 }
 }
 
