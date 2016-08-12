@@ -73,6 +73,17 @@ struct constructor {
     using is_initializable_from = util::conjunction<
         typename util::contains<Attributes, PassedAttributes...>...
     >;
+
+    /**
+     * Check whether a specific attribute is used by this constructor
+     *
+     * Instantiations provide a member `value` which is `true` if the attribute
+     * is used for constructing an object and false otherwise.
+     */
+    template <
+        typename Attribute
+    >
+    using uses = util::contains<Attribute, Attributes...>;
 };
 
 
