@@ -174,6 +174,52 @@ struct attribute {
     ) {
         return method_accessor<ObjType,type&&>(getter, setter);
     }
+
+
+    /**
+     * From a number of values, select the value for the current attribute
+     *
+     * Using this static method, one can select the value for a specific
+     * attribute from a sequence of parameters passed to a function or
+     * method.
+     *
+     * Like `std::forward()`, `select()` is designed to be used within a method
+     * or function call, e.g.:
+     *
+     *     foo(attr1::select<attr1, attr2, attr3>('x', "bar", 42))
+     *
+     */
+    template <
+        typename Attribute,
+        typename ...Attributes
+    >
+    static
+    constexpr
+    type&&
+    select(
+        typename Attribute::type const& arg0,
+        typename std::conditional<
+            std::is_same<Attributes, attribute>::value,
+            typename Attributes::type&&,
+            typename Attributes::type const&
+        >::type... args
+    ) {
+        return std::forward(select(std::forward(args)...));
+    }
+
+    // overload for the current attribute
+    template <
+        typename ...Attributes
+    >
+    static
+    constexpr
+    type&&
+    select(
+        type&& arg0,
+        typename Attributes::type const&... args
+    ) {
+        return std::forward<type>(arg0);
+    }
 };
 }
 

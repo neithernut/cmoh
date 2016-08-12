@@ -44,7 +44,7 @@ namespace cmoh {
  *
  * TODO: further explanation
  *
- * Users are discouraged from constructing accessor bundles directly. Usexi
+ * Users are discouraged from constructing accessor bundles directly. Use
  * `bundle()` instread as a factory.
  */
 template <
@@ -185,7 +185,7 @@ constexpr
 const
 accessor_bundle<Accessors...>
 bundle(
-    Accessors... accessors ///< accessors to bundle
+    Accessors&&... accessors ///< accessors to bundle
 ) {
     return accessor_bundle<Accessors...>(std::forward<Accessors>(accessors)...);
 }
