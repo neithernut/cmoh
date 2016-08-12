@@ -26,6 +26,7 @@
 
 
 // std includes
+#include <chrono>
 #include <string>
 
 
@@ -36,15 +37,18 @@
  */
 class person {
 public:
+    person(std::chrono::system_clock::time_point const& birthday);
+    person(person const&) = default;
+    person(person&&) = default;
+
     std::string name() const;
     void set_name(std::string const& name);
 
-    unsigned int age() const;
-    void set_age(unsigned int age);
+    std::chrono::hours age() const;
 
 private:
     std::string _name;
-    unsigned int _age;
+    std::chrono::system_clock::time_point _birthday;
 };
 
 

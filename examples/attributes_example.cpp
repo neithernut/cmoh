@@ -37,7 +37,7 @@
 // At first, we declare attributes we want to access. This may be done in a
 // separate header. Note that the age of a person cannot be set.
 using name = cmoh::attribute<std::string>;
-using age = cmoh::attribute<const unsigned int>;
+using age = cmoh::attribute<const std::chrono::hours>;
 
 
 int main(int argc, char* argv[]) {
@@ -48,13 +48,12 @@ int main(int argc, char* argv[]) {
         age::accessor<person>(&person::age)
     );
 
-    person p;
+    person p(std::chrono::system_clock::now() - std::chrono::hours(24));
     p.set_name("Hans");
-    p.set_age(54);
 
     // We can read attributes from a real class via the accessor bundle
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
-    std::cout << "Age: " << accessors.get<age>(p) << std::endl;
+    std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
 
     // We can also set the attributes via the bundle
     std::cout << "Setting name..." << std::endl;
@@ -62,7 +61,10 @@ int main(int argc, char* argv[]) {
 
     // Re-read the attributes to demonstrate they have indeed changed
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
-    std::cout << "Age: " << accessors.get<age>(p) << std::endl;
+    std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
+    if (accessors.get<name>(p) != "Hans Wurst") {
+        return 1;
+    }
 
     return 0;
 }
