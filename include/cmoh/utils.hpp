@@ -129,6 +129,41 @@ using void_t = void;
 
 
 /**
+ * Meta type extracting the common type of a parameter pack
+ *
+ * If all `Types` are identical, the type will be exported as the member `type`.
+ * If not all parameters are identical, a compile time error will be issued.
+ */
+template <
+    typename ...Types ///< types to unify
+>
+struct common_type {
+    static_assert(count<Types...>::value > 0, "Parameter pack is empty");
+};
+
+// Specialization for more than one parameter
+template <
+    typename Type0,
+    typename ...Types
+>
+struct common_type<Type0, Types...> {
+    typedef Type0 type;
+    static_assert(
+        std::is_same<type, typename common_type<Types...>::type>::value,
+        "Types are not identical"
+    );
+};
+
+// Specialization for exactly one parameter
+template <
+    typename Type
+>
+struct common_type<Type> {
+    typedef Type type;
+};
+
+
+/**
  * Container holding various items, which can be retrieved via criteria
  *
  * Use this container if you have a bunch of items of which you want to select
