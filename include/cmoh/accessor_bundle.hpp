@@ -75,126 +75,55 @@ struct accesses_attribute<
 template <
     typename ...Accessors
 >
-class accessor_bundle;
+struct accessor_bundle {
+    typedef
+        typename util::common_type<typename Accessors::object_type...>::type
+        object_type;
 
 
-// Main specialization
-template <
-    typename Accessor,
-    typename ...Accessors
->
-class accessor_bundle<Accessor, Accessors...> {
-    typedef Accessor accessor;
-    accessor _accessor;
-
-    typedef accessor_bundle<Accessors...> next;
-    next _next;
-
-public:
-    /**
-     * The C++ type which may be accessed using the accessor bundle
-     */
-    typedef typename std::conditional<
-        util::count<Accessors...>::value == 0,
-        typename accessor::object_type,
-        typename next::object_type
-    >::type object_type;
-    static_assert(
-        std::is_same<typename accessor::object_type, object_type>::value,
-        "All accessors in a bundle must have the same object type"
-    );
-
-    accessor_bundle(accessor current, Accessors... accessors) :
-            _accessor(std::forward<accessor>(current)),
-            _next(std::forward<Accessors>(accessors)...) {};
+    accessor_bundle(Accessors... accessors) :
+            _accessors(std::forward<Accessors>(accessors)...) {}
     accessor_bundle(accessor_bundle const&) = default;
     accessor_bundle(accessor_bundle&&) = default;
     accessor_bundle() = delete;
+
 
     /**
      * Get the value of a specific attribute from an object
      *
      * \returns the value of the attribute
      */
-    template <typename Attribute>
-    typename std::enable_if<
-        !std::is_same<Attribute, typename accessor::attr>::value,
-        typename Attribute::type
-    >::type
+    template <
+        typename Attribute ///< attribute to get
+    >
+    typename Attribute::type
     get(
         object_type const& obj ///< object from which to get the value
     ) const {
-        return _next.template get<Attribute>(obj);
-    }
-
-    template <typename Attribute>
-    typename std::enable_if<
-        std::is_same<Attribute, typename accessor::attr>::value,
-        typename Attribute::type
-    >::type
-    get(
-        object_type const& obj ///< object from which to get the value
-    ) const {
-        return _accessor.get(obj);
+        return _accessors.
+            template get<accesses_attribute<Accessors, Attribute>...>().
+            get(obj);
     }
 
     /**
      * Set the value of a specific attribute on an object
      */
-    template <typename Attribute>
-    typename std::enable_if<
-        !std::is_same<Attribute, typename accessor::attr>::value
-    >::type
-    set(
-        object_type& obj, ///< object on which to set the attribute
-        typename Attribute::type&& value ///< value to set
-    ) const {
-        _next.template set<Attribute>(obj, std::forward<typename Attribute::type>(value));
-    }
-
-    template <typename Attribute>
-    typename std::enable_if<
-        std::is_same<Attribute, typename accessor::attr>::value
-    >::type
-    set(
-        object_type& obj, ///< object on which to set the attribute
-        typename Attribute::type&& value ///< value to set
-    ) const {
-        _accessor.set(obj, std::forward<typename Attribute::type>(value));
-    }
-};
-
-
-// Recursion terminator
-template <>
-class accessor_bundle<> {
-public:
-    typedef void object_type;
-
-    // accept whatever comes in and error out
-    template <typename Attribute, typename ObjectType>
-    typename Attribute::type
-    get(
-        ObjectType const& obj
-    ) const {
-        static_assert(
-            true,
-            "The attribute can not be accessed via this bundle."
-        );
-    }
-
-    // accept whatever comes in and error out
-    template <typename ObjectType, typename Value>
+    template <
+        typename Attribute ///< attribute to set
+    >
     void
-    get(
-        ObjectType const& obj,
-        Value&& value
+    set(
+        object_type& obj, ///< object on which to set the attribute
+        typename Attribute::type&& value ///< value to set
     ) const {
-        static_assert(
-            true,
-            "The attribute can not be accessed via this bundle."
-        );
+        _accessors.
+            template get<accesses_attribute<Accessors, Attribute>...>().
+            set(obj, std::forward<typename Attribute::type>(value));
     }
+
+
+private:
+    util::selectable_items<Accessors...> _accessors;
 };
 
 
