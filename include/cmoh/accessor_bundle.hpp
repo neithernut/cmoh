@@ -143,6 +143,70 @@ struct accessor_bundle {
 
 
 private:
+    /**
+     * Initialize attributes which are not used by a specific constructor
+     */
+    template <
+        typename Constructor, ///< constructor to consider
+        typename Attribute0, ///< first of the attributes
+        typename ...Attributes ///< rest of the attributes
+    >
+    void
+    initialize_if_unused(
+        object_type& obj, ///< object on which to set the attributes' values
+        typename Attribute0::type&& value0, ///< first of the values
+        typename Attributes::type&&... values ///< rest of the values
+    ) const {
+        initialize_single_if_unused<Constructor, Attribute0>(
+            obj,
+            std::forward<typename Attribute0::type>(value0)
+        );
+
+        // recurse
+        initialize_if_unused<Constructor, Attributes...>(
+            obj,
+            std::forward<typename Attributes::type>(values)...
+        );
+    }
+
+    // overload for an empty list of attributes
+    template <
+        typename Constructor
+    >
+    void
+    initialize_if_unused(
+        object_type& obj
+    ) const {}
+
+
+    /**
+     * Initialize a single attribute if it is not used by a specific constructor
+     */
+    template <
+        typename Constructor, ///< constructor to consider
+        typename Attribute ///< attribute to set
+    >
+    typename std::enable_if<!Constructor::template uses<Attribute>::value>::type
+    initialize_single_if_unused(
+        object_type& obj, ///< object on which to set the attribute's value
+        typename Attribute::type&& value ///< value to set
+    ) const {
+        // TODO: static assertion for unsettable attributes
+        set<Attribute>(obj, std::forward<typename Attribute::type>(value));
+    }
+
+    // overload for attributes which are used by the constructor specified
+    template <
+        typename Constructor,
+        typename Attribute
+    >
+    typename std::enable_if<Constructor::template uses<Attribute>::value>::type
+    initialize_single_if_unused(
+        object_type& obj,
+        typename Attribute::type&& value
+    ) const {}
+
+
     util::selectable_items<Accessors...> _accessors;
 };
 
