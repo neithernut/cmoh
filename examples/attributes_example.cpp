@@ -29,6 +29,7 @@
 // CMOH includes
 #include <cmoh/attribute.hpp>
 #include <cmoh/accessor_bundle.hpp>
+#include <cmoh/constructor.hpp>
 
 // local includes
 #include "person.hpp"
@@ -38,18 +39,22 @@
 // separate header. Note that the age of a person cannot be set.
 using name = cmoh::attribute<std::string>;
 using age = cmoh::attribute<const std::chrono::hours>;
+using birthday = cmoh::attribute<const std::chrono::system_clock::time_point>;
 
 
 int main(int argc, char* argv[]) {
     // From the attributes we pull accessors for a concrete C++ type and bundle
     // them in an accessor bundle.
     auto accessors = bundle(
+        cmoh::constructor<person, birthday>(),
         name::accessor<person>(&person::name, &person::set_name),
         age::accessor<person>(&person::age)
     );
 
-    person p(std::chrono::system_clock::now() - std::chrono::hours(24));
-    p.set_name("Hans");
+    person p = accessors.construct<birthday, name>(
+        std::chrono::system_clock::now() - std::chrono::hours(24),
+        "Hans"
+    );
 
     // We can read attributes from a real class via the accessor bundle
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
