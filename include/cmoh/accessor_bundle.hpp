@@ -37,6 +37,26 @@ namespace cmoh {
 
 
 /**
+ * Check whether a type can construct an object from some attributes
+ *
+ * Unlike attributes and methods, constructors are not selected explicitly by
+ * the user. Instead, an accessor bundle has to select one of potentially
+ * multiple constructors.
+ *
+ * Constructors are expected to feature a facility for testing whether a set of
+ * attributes is sufficient for calling the constructor. We cannot/don't want to
+ * rely on such a facility for all accessor types. Instead, we require each
+ * constructor type to specialize `cmoh::is_initializable_from` to perform the
+ * actual query.
+ */
+template <
+    typename SupposedConstructor, ///< type which _may_ be a constructor type
+    typename ...PassedAttributes ///< attributes available for construction
+>
+struct is_initializable_from : std::false_type {};
+
+
+/**
  * Check whether an accessor accesses a specific attribute
  *
  * This checks whether the accessor provided features a type `attr` identical to
@@ -89,6 +109,33 @@ struct accessor_bundle {
 
 
     /**
+     * Set the value of a specific attribute on an object
+     */
+    template <
+        typename ...Attributes ///< attributes from which to construct an object
+    >
+    object_type
+    construct(
+        typename Attributes::type&&... values ///< value to set
+    ) const {
+        auto constructor = _accessors.
+            template get<is_initializable_from<Accessors, Attributes...>...>();
+
+        // construct the object itself
+        auto retval{constructor.construct<Attributes...>(
+            std::forward<typename Attributes::type>(values)...
+        )};
+
+        initialize_if_unused<decltype(constructor), Attributes...>(
+            retval,
+            std::forward<typename Attributes::type>(values)...
+        );
+
+        return retval;
+    }
+
+
+    /**
      * Get the value of a specific attribute from an object
      *
      * \returns the value of the attribute
@@ -123,6 +170,70 @@ struct accessor_bundle {
 
 
 private:
+    /**
+     * Initialize attributes which are not used by a specific constructor
+     */
+    template <
+        typename Constructor, ///< constructor to consider
+        typename Attribute0, ///< first of the attributes
+        typename ...Attributes ///< rest of the attributes
+    >
+    void
+    initialize_if_unused(
+        object_type& obj, ///< object on which to set the attributes' values
+        typename Attribute0::type&& value0, ///< first of the values
+        typename Attributes::type&&... values ///< rest of the values
+    ) const {
+        initialize_single_if_unused<Constructor, Attribute0>(
+            obj,
+            std::forward<typename Attribute0::type>(value0)
+        );
+
+        // recurse
+        initialize_if_unused<Constructor, Attributes...>(
+            obj,
+            std::forward<typename Attributes::type>(values)...
+        );
+    }
+
+    // overload for an empty list of attributes
+    template <
+        typename Constructor
+    >
+    void
+    initialize_if_unused(
+        object_type& obj
+    ) const {}
+
+
+    /**
+     * Initialize a single attribute if it is not used by a specific constructor
+     */
+    template <
+        typename Constructor, ///< constructor to consider
+        typename Attribute ///< attribute to set
+    >
+    typename std::enable_if<!Constructor::template uses<Attribute>::value>::type
+    initialize_single_if_unused(
+        object_type& obj, ///< object on which to set the attribute's value
+        typename Attribute::type&& value ///< value to set
+    ) const {
+        // TODO: static assertion for unsettable attributes
+        set<Attribute>(obj, std::forward<typename Attribute::type>(value));
+    }
+
+    // overload for attributes which are used by the constructor specified
+    template <
+        typename Constructor,
+        typename Attribute
+    >
+    typename std::enable_if<Constructor::template uses<Attribute>::value>::type
+    initialize_single_if_unused(
+        object_type& obj,
+        typename Attribute::type&& value
+    ) const {}
+
+
     util::selectable_items<Accessors...> _accessors;
 };
 
