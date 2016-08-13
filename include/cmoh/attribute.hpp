@@ -177,6 +177,23 @@ struct attribute {
 
 
     /**
+     * Move an argument if it is linked to the current attribute
+     *
+     * This utility evaluates to a rvalue reference if the template parameter
+     * passed is the current attribute and to a const lvalue reference
+     * otherwise.
+     */
+    template <
+        typename Attribute
+    >
+    using move_if_same = typename std::conditional<
+        std::is_same<Attribute, attribute>::value,
+        typename Attribute::type&&,
+        typename Attribute::type const&
+    >::type;
+
+
+    /**
      * From a number of values, select the value for the current attribute
      *
      * Using this static method, one can select the value for a specific
@@ -195,25 +212,30 @@ struct attribute {
     >
     static
     constexpr
-    type&&
+    typename std::enable_if<
+        !std::is_same<Attribute, attribute>::value,
+        type&&
+    >::type
     select(
         typename Attribute::type const& arg0,
-        typename std::conditional<
-            std::is_same<Attributes, attribute>::value,
-            typename Attributes::type&&,
-            typename Attributes::type const&
-        >::type... args
+        move_if_same<Attributes>... args
     ) {
-        return std::forward(select(std::forward(args)...));
+        return std::forward<type>(select<Attributes...>(
+            std::forward<move_if_same<Attributes>>(args)...
+        ));
     }
 
     // overload for the current attribute
     template <
+        typename Attribute,
         typename ...Attributes
     >
     static
     constexpr
-    type&&
+    typename std::enable_if<
+        std::is_same<Attribute, attribute>::value,
+        type&&
+    >::type
     select(
         type&& arg0,
         typename Attributes::type const&... args
