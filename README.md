@@ -31,7 +31,7 @@ Dependencies
 ------------
 
 CMOH makes heavy use of templates and C++11 features. Hence, a C++11 compliant
-tool chain is required.
+tool chain is required. We recommend using clang-3.8 or gcc-5.3 or later.
 
 
 Installation
