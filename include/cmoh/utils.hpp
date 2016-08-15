@@ -224,7 +224,7 @@ public:
     >
     typename std::enable_if<
         BoolType0::value,
-        const value&
+        value const&
     >::type
     get() const {
         return _value;
