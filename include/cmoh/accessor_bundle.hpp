@@ -122,7 +122,7 @@ struct accessor_bundle {
             template get<is_initializable_from<Accessors, Attributes...>...>();
 
         // construct the object itself
-        auto retval{constructor.construct<Attributes...>(
+        auto retval{constructor.template construct<Attributes...>(
             std::forward<typename Attributes::type>(values)...
         )};
 
