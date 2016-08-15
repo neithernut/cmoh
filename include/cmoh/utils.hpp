@@ -190,6 +190,7 @@ template <
     typename ...Types ///< types of the items held by the container
 >
 struct selectable_items {
+    template <typename...> void get() {}
 };
 
 // Specialization for at least one parameter
@@ -235,10 +236,10 @@ public:
     >
     typename std::enable_if<
         !BoolType0::value,
-        decltype(_next.get<BoolTypes...>())
+        decltype(_next.template get<BoolTypes...>())
     >::type
     get() const {
-        return _next.get<BoolTypes...>();
+        return _next.template get<BoolTypes...>();
     }
 };
 
