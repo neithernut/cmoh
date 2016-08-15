@@ -29,7 +29,6 @@
 #include <utility>
 
 // local includes
-#include <cmoh/accessor_bundle.hpp>
 #include <cmoh/utils.hpp>
 
 
@@ -86,16 +85,6 @@ struct constructor {
     >
     using uses = util::contains<Attribute, Attributes...>;
 };
-
-
-// Specialization of `cmoh::is_initializable_from` for `cmoh::constructor`
-template <
-    typename ...Attributes,
-    typename ...PassedAttributes
->
-struct is_initializable_from<constructor<Attributes...>, PassedAttributes...> :
-    constructor<Attributes...>::
-    template is_initializable_from<PassedAttributes...> {};
 
 
 }
