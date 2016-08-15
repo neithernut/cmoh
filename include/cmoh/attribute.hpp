@@ -107,7 +107,7 @@ struct attribute {
          *
          * \returns the attribute's value
          */
-        type
+        attr::type
         get(
             object_type const& obj ///< object from which to get the value
         ) const {
@@ -120,9 +120,9 @@ struct attribute {
         void
         set(
             object_type& obj, ///< object on which to set the attribute
-            type&& value ///< value to set
+            attr::type&& value ///< value to set
         ) const {
-            (obj.*_setter)(std::forward<type>(value));
+            (obj.*_setter)(std::forward<attr::type>(value));
         }
     private:
         getter _getter;
