@@ -39,21 +39,68 @@ namespace cmoh {
 /**
  * Check whether a type can construct an object from some attributes
  *
- * Unlike attributes and methods, constructors are not selected explicitly by
- * the user. Instead, an accessor bundle has to select one of potentially
- * multiple constructors.
- *
- * Constructors are expected to feature a facility for testing whether a set of
- * attributes is sufficient for calling the constructor. We cannot/don't want to
- * rely on such a facility for all accessor types. Instead, we require each
- * constructor type to specialize `cmoh::is_initializable_from` to perform the
- * actual query.
+ * This checks whether the `SupposedConstructor` features a template with the
+ * name `is_initializable_from`. If it does, it evaluates that template with
+ * the `PassedAttributes` and presents that result via the static member
+ * `value`. Otherwise, `value` is `false`.
  */
 template <
     typename SupposedConstructor, ///< type which _may_ be a constructor type
     typename ...PassedAttributes ///< attributes available for construction
 >
-struct is_initializable_from : std::false_type {};
+struct is_initializable_from {
+private:
+    /**
+     * Check whether a type can be used to initialize anything
+     *
+     * This metafunction effectively checks whether a type features a template with
+     * the name `is_initializable_from` for which an instantiation with zero
+     * parameters exist.
+     */
+    template <
+        typename T, ///< type which may feature the template
+        typename = void
+    >
+    struct has_is_initializable_from : std::false_type {};
+
+    // specialization for types featuring the name
+    template <
+        typename T
+    >
+    struct has_is_initializable_from<
+        T,
+        util::void_t<typename T::template is_initializable_from<>>
+    > : std::true_type {};
+
+
+    /**
+     * Internal helper for selective evaluation of is_initializable_from
+     *
+     * Evaluates `T::is_initializable_from<Attributes...>` only if `flag` is
+     * `true`.
+     */
+    template <
+        typename T, ///< type featuring `is_initializable_from`
+        bool flag, ///< flag controlling the evaluation
+        typename ...Attributes ///< attributes to pass as template parameters
+    >
+    struct helper : std::false_type {};
+
+    // specialization for evaluating the template
+    template <
+        typename T,
+        typename ...Attributes
+    >
+    struct helper<T, true, Attributes...> :
+        T::template is_initializable_from<Attributes...> {};
+
+public:
+    static constexpr bool value = helper<
+        SupposedConstructor,
+        has_is_initializable_from<SupposedConstructor>::value,
+        PassedAttributes...
+    >::value;
+};
 
 
 /**
