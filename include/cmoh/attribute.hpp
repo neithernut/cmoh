@@ -86,6 +86,17 @@ struct attribute {
         typedef GetterVal(object_type::* getter)() const;
         typedef void(object_type::* setter)(SetterArg);
 
+
+        static_assert(
+            std::is_convertible<GetterVal, attr::type>::value,
+            "Value returned by getter is not convertible to attribute type"
+        );
+        static_assert(
+            std::is_convertible<attr::type, SetterArg>::value,
+            "Attribute's type is not convertible to type required by setter"
+        );
+
+
         method_accessor(getter getter, setter setter = nullptr)
             : _getter(getter), _setter(setter) {};
         method_accessor(method_accessor const&) = default;
