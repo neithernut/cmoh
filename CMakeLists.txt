@@ -36,4 +36,5 @@ install(EXPORT cmoh DESTINATION lib)
 
 # Pkg-config export
 configure_file(cmoh.pc.in cmoh.pc @ONLY)
+install(FILES cmoh.pc DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
 
