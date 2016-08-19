@@ -34,4 +34,6 @@ install(
 install(TARGETS cmoh EXPORT cmoh PUBLIC_HEADER)
 install(EXPORT cmoh DESTINATION lib)
 
+# Pkg-config export
+configure_file(cmoh.pc.in cmoh.pc @ONLY)
 
