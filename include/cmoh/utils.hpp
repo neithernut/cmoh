@@ -24,6 +24,8 @@
 #ifndef CMOH_UTILS_HPP__
 #define CMOH_UTILS_HPP__
 
+#include <type_traits>
+
 
 namespace cmoh {
 namespace util {
