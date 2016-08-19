@@ -26,4 +26,12 @@ install(
     FILES_MATCHING PATTERN "*.hpp"
 )
 
+# CMake specific export
+#
+# Because of CMake being a bitch when it comes to non-stndart use-cases, we
+# have to have this dummy target which we can't even use to install the
+# headers
+install(TARGETS cmoh EXPORT cmoh PUBLIC_HEADER)
+install(EXPORT cmoh DESTINATION lib)
+
 
