@@ -11,16 +11,19 @@ target_include_directories(cmoh INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
 )
-install(
-    DIRECTORY include/cmoh/
-    DESTINATION include/cmoh
-    FILES_MATCHING PATTERN "*.hpp"
-)
 
 
 # examples/tests
 enable_testing()
 add_subdirectory(examples)
 add_subdirectory(test)
+
+
+# installation
+install(
+    DIRECTORY include/cmoh/
+    DESTINATION include/cmoh
+    FILES_MATCHING PATTERN "*.hpp"
+)
 
 
