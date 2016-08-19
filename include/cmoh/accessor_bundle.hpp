@@ -30,6 +30,7 @@
 #include <utility>
 
 // local includes
+#include <cmoh/selectable_items.hpp>
 #include <cmoh/utils.hpp>
 
 
@@ -281,7 +282,7 @@ private:
     ) const {}
 
 
-    util::selectable_items<Accessors...> _accessors;
+    selectable_items<Accessors...> _accessors;
 };
 
 
