@@ -94,7 +94,7 @@ public:
         BoolType0::value,
         value const&
     >::type
-    get() const {
+    get() const noexcept {
         return _value;
     }
 
@@ -106,7 +106,7 @@ public:
         !BoolType0::value,
         decltype(_next.template get<BoolTypes...>())
     >::type
-    get() const {
+    get() const noexcept {
         return _next.template get<BoolTypes...>();
     }
 };
