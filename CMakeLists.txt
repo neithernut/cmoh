@@ -21,5 +21,6 @@ install(
 # examples/tests
 enable_testing()
 add_subdirectory(examples)
+add_subdirectory(test)
 
 

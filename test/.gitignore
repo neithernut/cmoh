@@ -1,0 +1,4 @@
+# Ignore output of self sufficiency tests
+*_selfsufficiency
+*_selfsufficiency.cpp
+
