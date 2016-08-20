@@ -107,8 +107,8 @@ public:
 /**
  * Check whether an accessor accesses a specific attribute
  *
- * This checks whether the accessor provided features a type `attr` identical to
- * the attribute provided.
+ * This checks whether the accessor provided features a type `attribute`
+ * identical to the attribute provided.
  */
 template <
     typename Accessor, ///< accessor to test for the attribute
@@ -125,8 +125,8 @@ template <
 struct accesses_attribute<
     Accessor,
     Attribute,
-    util::void_t<typename Accessor::attr>
-> : std::is_same<Attribute, typename Accessor::attr> {};
+    util::void_t<typename Accessor::attribute>
+> : std::is_same<Attribute, typename Accessor::attribute> {};
 
 
 /**
