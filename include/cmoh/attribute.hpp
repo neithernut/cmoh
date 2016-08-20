@@ -69,79 +69,29 @@ struct attribute {
     static constexpr bool is_const = std::is_const<Attr>::value;
 
 
-    template <typename Obj, typename GetterVal, typename SetterVal>
-    using method_accessor =
-        accessors::attribute::by_method<attribute, Obj, GetterVal, SetterVal>;
-
-    // overload for creating a method accessor
+    /**
+     * Get an accessor for the attribute
+     *
+     * This methos creates a new accessor using the facilities passed to it.
+     * That accessor may be used to access the attribute in a concrete C++
+     * struct or class of type `ObjType`.
+     */
     template <
         typename ObjType, ///< type of the class or struct with the attribute
-        typename Value = type
+        typename Value = type, ///< type of the value in the concrete C++ type
+        typename... Args ///< arguments forwarded to the factory
     >
     static
     constexpr
-    typename std::enable_if<
-        is_const,
-        method_accessor<ObjType, Value, Value>
-    >::type
+    decltype(accessors::attribute::make_accessor<attribute, ObjType, Value>(
+        std::declval<Args>()...
+    ))
     accessor(
-        typename method_accessor<ObjType, Value, Value>::getter getter
+        Args&&... args
     ) {
-        return method_accessor<ObjType, Value, Value>(getter, nullptr);
-    }
-
-    // overload for creating a method accessor
-    template <
-        typename ObjType, ///< type of the class or struct with the attribute
-        typename Value = type
-    >
-    static
-    constexpr
-    typename std::enable_if<
-        !is_const,
-        method_accessor<ObjType, Value, Value>
-    >::type
-    accessor(
-        typename method_accessor<ObjType, Value, Value>::getter getter,
-        typename method_accessor<ObjType, Value, Value>::setter setter
-    ) {
-        return method_accessor<ObjType, Value, Value>(getter, setter);
-    }
-
-    // overload for creating a method accessor
-    template <
-        typename ObjType, ///< type of the class or struct with the attribute
-        typename Value = type
-    >
-    static
-    constexpr
-    typename std::enable_if<
-        !is_const,
-        method_accessor<ObjType, Value, Value const&>
-    >::type
-    accessor(
-        typename method_accessor<ObjType, Value, Value const&>::getter getter,
-        typename method_accessor<ObjType, Value, Value const&>::setter setter
-    ) {
-        return method_accessor<ObjType, Value, Value const&>(getter, setter);
-    }
-
-    // overload for creating a method accessor
-    template <
-        typename ObjType, ///< type of the class or struct with the attribute
-        typename Value = type
-    >
-    static
-    constexpr
-    typename std::enable_if<
-        !is_const,
-        method_accessor<ObjType, Value, Value&&>
-    >::type
-    accessor(
-        typename method_accessor<ObjType, Value, Value&&>::getter getter,
-        typename method_accessor<ObjType, Value, Value&&>::setter setter
-    ) {
-        return method_accessor<ObjType, Value, Value&&>(getter, setter);
+        return accessors::attribute::make_accessor<attribute, ObjType, Value>(
+            std::forward<Args>(args)...
+        );
     }
 
 

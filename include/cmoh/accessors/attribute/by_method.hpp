@@ -102,6 +102,75 @@ private:
 };
 
 
+// accessor factory overlaods for the `cmoh::accessor::attribute::by_method`
+template <
+    typename Attribute, ///< attribute being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename Value ///< type of the value in the concrete C++ type
+>
+constexpr
+typename std::enable_if<
+    Attribute::is_const,
+    by_method<Attribute, ObjType, Value, Value>
+>::type
+make_accessor(
+    typename by_method<Attribute, ObjType, Value, Value>::getter getter
+) {
+    return by_method<Attribute, ObjType, Value, Value>(getter, nullptr);
+}
+
+template <
+    typename Attribute, ///< attribute being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename Value ///< type of the value in the concrete C++ type
+>
+constexpr
+typename std::enable_if<
+    !Attribute::is_const,
+    by_method<Attribute, ObjType, Value, Value>
+>::type
+make_accessor(
+    typename by_method<Attribute, ObjType, Value, Value>::getter getter,
+    typename by_method<Attribute, ObjType, Value, Value>::setter setter
+) {
+    return by_method<Attribute, ObjType, Value, Value>(getter, setter);
+}
+
+template <
+    typename Attribute, ///< attribute being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename Value ///< type of the value in the concrete C++ type
+>
+constexpr
+typename std::enable_if<
+    !Attribute::is_const,
+    by_method<Attribute, ObjType, Value, Value const&>
+>::type
+make_accessor(
+    typename by_method<Attribute, ObjType, Value, Value const&>::getter getter,
+    typename by_method<Attribute, ObjType, Value, Value const&>::setter setter
+) {
+    return by_method<Attribute, ObjType, Value, Value const&>(getter, setter);
+}
+
+template <
+    typename Attribute, ///< attribute being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename Value ///< type of the value in the concrete C++ type
+>
+constexpr
+typename std::enable_if<
+    !Attribute::is_const,
+    by_method<Attribute, ObjType, Value, Value&&>
+>::type
+make_accessor(
+    typename by_method<Attribute, ObjType, Value, Value&&>::getter getter,
+    typename by_method<Attribute, ObjType, Value, Value&&>::setter setter
+) {
+    return by_method<Attribute, ObjType, Value, Value&&>(getter, setter);
+}
+
+
 }
 }
 }
