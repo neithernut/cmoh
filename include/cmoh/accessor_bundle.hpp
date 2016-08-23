@@ -144,6 +144,10 @@ template <
     typename ...Accessors
 >
 struct accessor_bundle {
+private:
+    typedef selectable_items<Accessors...> accessors;
+
+public:
     typedef
         typename util::common_type<typename Accessors::object_type...>::type
         object_type;
@@ -282,7 +286,7 @@ private:
     ) const {}
 
 
-    selectable_items<Accessors...> _accessors;
+    accessors _accessors;
 };
 
 
