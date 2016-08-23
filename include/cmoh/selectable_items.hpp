@@ -122,7 +122,7 @@ public:
     >
     typename std::enable_if<
         !BoolType0::value,
-        decltype(_next.template get<BoolTypes...>())
+        typename next::template type_of<BoolTypes...>
     >::type
     get() const noexcept {
         return _next.template get<BoolTypes...>();
