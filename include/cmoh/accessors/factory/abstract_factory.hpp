@@ -21,15 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef CMOH_ACCESSORS_FACTORY_CONSTRUCTOR_HPP__
-#define CMOH_ACCESSORS_FACTORY_CONSTRUCTOR_HPP__
+#ifndef CMOH_ACCESSORS_FACTORY_ABSTRACT_FACTORY_HPP__
+#define CMOH_ACCESSORS_FACTORY_ABSTRACT_FACTORY_HPP__
 
 
 // std includes
 #include <utility>
 
 // local includes
-#include <cmoh/accessors/factory/abstract_factory.hpp>
+#include <cmoh/utils.hpp>
 
 
 namespace cmoh {
@@ -38,32 +38,38 @@ namespace factory {
 
 
 /**
- * Factory using a constructor
+ * Object factory wrapper base
  *
- * Using this template, a programmer may specify from which attributes a
- * specific C++ type may be constructed.
- *
- * Users are discouraged from constructing method accessors directly. Use
- * one of the `cmoh::factory()` overloads provided by the attribute instead.
+ * This template provides a few utilities and other members which are expected
+ * from a factory.
  */
 template <
-    typename ObjType, ///< type of the class or struct to be constructed
     typename ...Attributes ///< attributes fed to the constructor
 >
-struct constructor : abstract_factory<Attributes...> {
-    typedef ObjType object_type; ///< type being constructed
-
+struct abstract_factory {
+    /**
+     * Check whether the constructor can be invoked using some attributes
+     *
+     * Instantiations provide a member `value` which is `true` if the attributes
+     * are sufficient for constructing an object and false otherwise.
+     */
     template <
-        typename ...PassedAttributes ///< attrbiutes availible for construction
+        typename ...PassedAttributes ///< attributes availible for construction
     >
-    object_type
-    create(typename PassedAttributes::type&&... arguments) const {
-        return object_type{
-            Attributes::template select<PassedAttributes...>(
-                std::forward<typename PassedAttributes::type>(arguments)...
-            )...
-        };
-    }
+    using is_initializable_from = util::conjunction<
+        typename util::contains<Attributes, PassedAttributes...>...
+    >;
+
+    /**
+     * Check whether a specific attribute is used by this constructor
+     *
+     * Instantiations provide a member `value` which is `true` if the attribute
+     * is used for constructing an object and false otherwise.
+     */
+    template <
+        typename Attribute
+    >
+    using uses = util::contains<Attribute, Attributes...>;
 };
 
 
