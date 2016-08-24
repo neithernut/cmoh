@@ -106,6 +106,43 @@ using accessor_type_of = std::integral_constant<
 >;
 
 
+/**
+ * Query an accessor's underlying type
+ *
+ * Returns an accessor's underlying property (e.g. the type containing the
+ * members `key_type` and `key`) or void via the member `type`.
+ */
+template <
+    typename Accessor
+>
+struct property {
+private:
+    template <
+        typename T,
+        accessor_type acc_type
+    >
+    struct helper {
+        typedef void type;
+    };
+
+    template <typename T>
+    struct helper<T, factory_implementation> {
+        typedef T type;
+    };
+
+    template <typename T>
+    struct helper<T, attribute_accessor> {
+        typedef typename T::attribute type;
+    };
+
+public:
+    typedef typename helper<
+        Accessor,
+        accessor_type_of<Accessor>::value
+    >::type type;
+};
+
+
 }
 }
 
