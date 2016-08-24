@@ -35,22 +35,41 @@
 #include "person.hpp"
 
 
-// At first, we declare attributes we want to access. This may be done in a
-// separate header. Note that the age of a person cannot be set.
-using name = cmoh::attribute<std::string>;
-using age = cmoh::attribute<const std::chrono::hours>;
-using birthday = cmoh::attribute<const std::chrono::system_clock::time_point>;
+
+
+// We declare attributes we want to access. This may as well be done in a
+// separate header.
+
+// We need to specify some datatype we use for addressing objects' properties.
+// In this example, we use an enumeration.
+enum attribute {birthday, name, age};
+
+// We now declare the attributes. Each attribute has a key and a type. The
+// attributes "age" and "birthday" are const, which means they cannot be set.
+// They may, however, still be used in construction.
+using birthday_attr = cmoh::attribute<attribute, birthday,
+    const std::chrono::system_clock::time_point>;
+using name_attr = cmoh::attribute<attribute, name, std::string>;
+using age_attr = cmoh::attribute<attribute, age, const std::chrono::hours>;
+
+
 
 
 int main(int argc, char* argv[]) {
     // From the attributes we pull accessors for a concrete C++ type and bundle
-    // them in an accessor bundle.
+    // them in an accessor bundle. Note: "age" is actually not an attribute in
+    // `person` but a dependent value. However, as the attribute specified above
+    // is const anyways, we can just supply the calculation method as the
+    // getter.
     auto accessors = bundle(
-        cmoh::factory<person, birthday>(),
-        name::accessor<person>(&person::name, &person::set_name),
-        age::accessor<person>(&person::age)
+        cmoh::factory<person, birthday_attr>(),
+        name_attr::accessor<person>(&person::name, &person::set_name),
+        age_attr::accessor<person>(&person::age)
     );
 
+    // Using the bundle, we can create objects. In this case, we use the factory
+    // we supplied to the bundle, which creates an object from a birthday using
+    // the regular constructor. The name is set using the setter.
     person p = accessors.create<birthday, name>(
         std::chrono::system_clock::now() - std::chrono::hours(24),
         "Hans"
@@ -60,11 +79,11 @@ int main(int argc, char* argv[]) {
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
     std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
 
-    // We can also set the attributes via the bundle
+    // We can also set attributes via the bundle
     std::cout << "Setting name..." << std::endl;
     accessors.set<name>(p, "Hans Wurst");
 
-    // Re-read the attributes to demonstrate they have indeed changed
+    // ...
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
     std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
     if (accessors.get<name>(p) != "Hans Wurst") {
