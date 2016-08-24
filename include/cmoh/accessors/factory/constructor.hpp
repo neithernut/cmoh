@@ -69,6 +69,20 @@ struct constructor : abstract_factory<Attributes...> {
 
 }
 }
+
+
+// factory factory overload for constructors
+template <
+    typename ObjType,
+    typename ...Attributes
+>
+constexpr
+accessors::factory::constructor<ObjType, Attributes...>
+factory() {
+    return accessors::factory::constructor<ObjType, Attributes...>();
+}
+
+
 }
 
 
