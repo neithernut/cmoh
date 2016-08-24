@@ -27,9 +27,9 @@
 #include <iostream>
 
 // CMOH includes
-#include <cmoh/attribute.hpp>
 #include <cmoh/accessor_bundle.hpp>
-#include <cmoh/constructor.hpp>
+#include <cmoh/attribute.hpp>
+#include <cmoh/factory.hpp>
 
 // local includes
 #include "person.hpp"
@@ -46,12 +46,12 @@ int main(int argc, char* argv[]) {
     // From the attributes we pull accessors for a concrete C++ type and bundle
     // them in an accessor bundle.
     auto accessors = bundle(
-        cmoh::constructor<person, birthday>(),
+        cmoh::factory<person, birthday>(),
         name::accessor<person>(&person::name, &person::set_name),
         age::accessor<person>(&person::age)
     );
 
-    person p = accessors.construct<birthday, name>(
+    person p = accessors.create<birthday, name>(
         std::chrono::system_clock::now() - std::chrono::hours(24),
         "Hans"
     );
