@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-#ifndef CMOH_CONSTRUCTOR_HPP__
-#define CMOH_CONSTRUCTOR_HPP__
+#ifndef CMOH_ACCESSORS_FACTORY_CONSTRUCTOR_HPP__
+#define CMOH_ACCESSORS_FACTORY_CONSTRUCTOR_HPP__
 
 
 // std includes
@@ -33,6 +33,8 @@
 
 
 namespace cmoh {
+namespace accessors {
+namespace factory {
 
 
 /**
@@ -87,6 +89,8 @@ struct constructor {
 };
 
 
+}
+}
 }
 
 
