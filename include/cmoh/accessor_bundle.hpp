@@ -163,18 +163,18 @@ struct accessor_bundle {
         typename ...Attributes ///< attributes from which to construct an object
     >
     object_type
-    construct(
+    create(
         typename Attributes::type&&... values ///< value to set
     ) const {
-        auto constructor = _accessors.
+        auto factory = _accessors.
             template get<is_initializable_from<Accessors, Attributes...>...>();
 
         // construct the object itself
-        auto retval{constructor.template construct<Attributes...>(
+        auto retval{factory.template create<Attributes...>(
             std::forward<typename Attributes::type>(values)...
         )};
 
-        initialize_if_unused<decltype(constructor), Attributes...>(
+        initialize_if_unused<decltype(factory), Attributes...>(
             retval,
             std::forward<typename Attributes::type>(values)...
         );
