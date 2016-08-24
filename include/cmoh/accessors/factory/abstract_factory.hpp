@@ -30,6 +30,7 @@
 
 // local includes
 #include <cmoh/utils.hpp>
+#include <cmoh/accessors/utils.hpp>
 
 
 namespace cmoh {
@@ -47,6 +48,13 @@ template <
     typename ...Attributes ///< attributes fed to the constructor
 >
 struct abstract_factory {
+    /**
+     * The common key type of all attributes used
+     */
+    typedef typename util::common_type<
+        typename property<Attributes>::type::key_type...
+    >::type key_type;
+
     /**
      * Check whether the constructor can be invoked using some attributes
      *
