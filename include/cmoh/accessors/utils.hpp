@@ -143,6 +143,40 @@ public:
 };
 
 
+/**
+ * Check whether an accessor accesses one of several properties
+ *
+ * Provides the member `value`, which is true if the accessor provided accesses
+ * any property represented by `keys` and false otherwise.
+ */
+template <
+    typename Accessor, ///< accessor to check
+    typename KeyType, ///< key type to use
+    KeyType ...keys ///< keys to compare to
+>
+struct accesses {
+private:
+    template <
+        typename T,
+        KeyType key,
+        typename = void
+    >
+    struct helper : std::false_type {};
+
+    template <
+        KeyType key,
+        typename T
+    >
+    struct helper<T, key, util::void_t<decltype(T::key)>> :
+        std::integral_constant<bool, T::key == key> {};
+
+public:
+    static constexpr const bool value = util::disjunction<
+        helper<typename property<Accessor>::type, keys>...
+    >::value;
+};
+
+
 }
 }
 
