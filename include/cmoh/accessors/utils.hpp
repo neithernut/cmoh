@@ -177,6 +177,41 @@ public:
 };
 
 
+/**
+ * Get the one property having a specific key
+ *
+ * The property identified by `key` provided by the `Accessor` supplied is
+ * exposed via the member `type`. If no such property exists, `type` will be
+ * `void`.
+ */
+template <
+    typename Accessor, ///< accessor from which to extract the property
+    typename KeyType, ///< key type to use
+    KeyType key ///< key to compare to
+>
+struct property_by_key {
+private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper {
+        typedef typename std::conditional<
+            accesses<T, KeyType, key>::value,
+            typename property<T>::type,
+            void
+        >::type type;
+    };
+
+    template <typename T>
+    struct helper<T, util::void_t<typename T::template property_by_key<key>>> :
+        T::template property_by_key<key> {};
+
+public:
+    typedef typename helper<Accessor>::type type;
+};
+
+
 }
 }
 

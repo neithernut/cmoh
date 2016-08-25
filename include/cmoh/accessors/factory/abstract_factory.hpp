@@ -78,6 +78,23 @@ struct abstract_factory {
         typename Attribute
     >
     using uses = util::contains<Attribute, Attributes...>;
+
+    /**
+     * Get the one property having a specific key
+     *
+     * Provides either the attribute having the provided `key` or void via the
+     * member `type`.
+     */
+    template <
+        key_type key
+    >
+    using property_by_key = util::common_type<
+        typename std::conditional<
+            Attributes::key == key,
+            Attributes,
+            void
+        >::type...
+    >;
 };
 
 
