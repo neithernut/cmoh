@@ -30,6 +30,7 @@
 #include <utility>
 
 // local includes
+#include <cmoh/accessors/utils.hpp>
 #include <cmoh/selectable_items.hpp>
 #include <cmoh/utils.hpp>
 
@@ -154,6 +155,13 @@ public:
     typedef
         typename util::common_type<typename Accessors::object_type...>::type
         object_type;
+
+    /**
+     * Common key type of all accessors
+     */
+    typedef typename util::common_type<
+        typename cmoh::accessors::property<Accessors>::type::key_type...
+    >::type key_type;
 
 
     accessor_bundle(Accessors... accessors) :
