@@ -133,8 +133,10 @@ using void_t = void;
 /**
  * Meta type extracting the common type of a parameter pack
  *
- * If all `Types` are identical, the type will be exported as the member `type`.
- * If not all parameters are identical, a compile time error will be issued.
+ * All `Types` that are identical to `void` are ignored. If all the remaining
+ * `Types` are identical, the type will be exported as the member `type`.
+ * If not all parameters are identical or `void`, a compile time error will be
+ * issued.
  */
 template <
     typename ...Types ///< types to unify
@@ -151,9 +153,18 @@ template <
 struct common_type<Type0, Types...> {
     typedef Type0 type;
     static_assert(
-        std::is_same<type, typename common_type<Types...>::type>::value,
+        std::is_same<typename common_type<Types...>::type, type>::value ||
+        std::is_void<typename common_type<Types...>::type>::value,
         "Types are not identical"
     );
+};
+
+// Specialization for the void type
+template <
+    typename ...Types
+>
+struct common_type<void, Types...> {
+    typedef typename common_type<Types...>::type type;
 };
 
 // Specialization for exactly one parameter
@@ -162,6 +173,12 @@ template <
 >
 struct common_type<Type> {
     typedef Type type;
+};
+
+// Otherwise pointless specialization to avoid "ambogious specialization"
+template <>
+struct common_type<void> {
+    typedef void type;
 };
 
 

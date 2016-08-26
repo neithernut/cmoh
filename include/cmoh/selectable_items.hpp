@@ -58,6 +58,7 @@ template <
     typename ...Types ///< types of the items held by the container
 >
 struct selectable_items {
+    template <typename...> using type_of = void;
     template <typename...> void get() {}
 };
 
@@ -77,7 +78,24 @@ private:
     next _next;
 
 
+    // helper for type_of
+    template <typename ...BoolTypes>
+    struct type_of_helper;
+
+    template <typename BoolType0, typename ...BoolTypes>
+    struct type_of_helper<BoolType0, BoolTypes...> : std::conditional<
+        BoolType0::value,
+        value,
+        typename next::template type_of<BoolTypes...>
+    > {};
+
 public:
+    template <
+        typename ...BoolTypes
+    >
+    using type_of = typename type_of_helper<BoolTypes...>::type;
+
+
     selectable_items(value&& current, Types... values) :
             _value(std::forward<value>(current)),
             _next(std::forward<Types>(values)...) {};
@@ -104,7 +122,7 @@ public:
     >
     typename std::enable_if<
         !BoolType0::value,
-        decltype(_next.template get<BoolTypes...>())
+        typename next::template type_of<BoolTypes...>
     >::type
     get() const noexcept {
         return _next.template get<BoolTypes...>();

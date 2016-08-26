@@ -107,8 +107,8 @@ public:
 /**
  * Check whether an accessor accesses a specific attribute
  *
- * This checks whether the accessor provided features a type `attr` identical to
- * the attribute provided.
+ * This checks whether the accessor provided features a type `attribute`
+ * identical to the attribute provided.
  */
 template <
     typename Accessor, ///< accessor to test for the attribute
@@ -125,8 +125,8 @@ template <
 struct accesses_attribute<
     Accessor,
     Attribute,
-    util::void_t<typename Accessor::attr>
-> : std::is_same<Attribute, typename Accessor::attr> {};
+    util::void_t<typename Accessor::attribute>
+> : std::is_same<Attribute, typename Accessor::attribute> {};
 
 
 /**
@@ -163,18 +163,18 @@ struct accessor_bundle {
         typename ...Attributes ///< attributes from which to construct an object
     >
     object_type
-    construct(
+    create(
         typename Attributes::type&&... values ///< value to set
     ) const {
-        auto constructor = _accessors.
+        auto factory = _accessors.
             template get<is_initializable_from<Accessors, Attributes...>...>();
 
         // construct the object itself
-        auto retval{constructor.template construct<Attributes...>(
+        auto retval{factory.template create<Attributes...>(
             std::forward<typename Attributes::type>(values)...
         )};
 
-        initialize_if_unused<decltype(constructor), Attributes...>(
+        initialize_if_unused<decltype(factory), Attributes...>(
             retval,
             std::forward<typename Attributes::type>(values)...
         );
