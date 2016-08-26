@@ -221,31 +221,31 @@ public:
      * \returns the value of the attribute
      */
     template <
-        typename Attribute ///< attribute to get
+        key_type key ///< key of attribute to get
     >
-    typename Attribute::type
+    typename property_by_key<key>::type
     get(
         object_type const& obj ///< object from which to get the value
     ) const {
-        return _accessors.
-            template get<accesses_attribute<Accessors, Attribute>...>().
-            get(obj);
+        return _accessors.template get<
+            cmoh::accessors::accesses<Accessors, key_type, key>...
+        >().get(obj);
     }
 
     /**
      * Set the value of a specific attribute on an object
      */
     template <
-        typename Attribute ///< attribute to set
+        key_type key ///< key of attribute to set
     >
     void
     set(
         object_type& obj, ///< object on which to set the attribute
-        typename Attribute::type&& value ///< value to set
+        typename property_by_key<key>::type&& value ///< value to set
     ) const {
-        _accessors.
-            template get<accesses_attribute<Accessors, Attribute>...>().
-            set(obj, std::forward<typename Attribute::type>(value));
+        _accessors.template get<
+            cmoh::accessors::accesses<Accessors, key_type, key>...
+        >().set(obj, std::forward<typename property_by_key<key>::type>(value));
     }
 
 
@@ -299,7 +299,7 @@ private:
         typename Attribute::type&& value ///< value to set
     ) const {
         // TODO: static assertion for unsettable attributes
-        set<Attribute>(obj, std::forward<typename Attribute::type>(value));
+        set<Attribute::key>(obj, std::forward<typename Attribute::type>(value));
     }
 
     // overload for attributes which are used by the constructor specified
