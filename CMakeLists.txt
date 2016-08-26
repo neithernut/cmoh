@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(cmoh CXX)
 
-# we require C++11
-set(CMAKE_CXX_STANDARD 11)
+# we require C++14
+set(CMAKE_CXX_STANDARD 14)
 
 
 # some formal declaration of the library
