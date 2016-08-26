@@ -212,6 +212,28 @@ public:
 };
 
 
+template <
+    typename Accessor,
+    typename KeyType,
+    KeyType ...keys
+>
+struct is_initializable_from {
+    private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper : std::false_type {};
+
+    template <typename T>
+    struct helper<T, util::void_t<typename T::template is_initializable_from<>>> :
+        T::template is_initializable_from<keys...> {};
+
+public:
+    static constexpr const bool value = helper<Accessor>::value;
+};
+
+
 }
 }
 

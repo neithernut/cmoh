@@ -192,23 +192,28 @@ public:
      * Set the value of a specific attribute on an object
      */
     template <
-        typename ...Attributes ///< attributes from which to construct an object
+        key_type ...keys ///< keys of attributes from which to construct an object
     >
     object_type
     create(
-        typename Attributes::type&&... values ///< value to set
+        typename property_by_key<keys>::type&&... values ///< values to use
     ) const {
-        auto factory = _accessors.
-            template get<is_initializable_from<Accessors, Attributes...>...>();
+        auto factory = _accessors.template get<
+            cmoh::accessors::is_initializable_from<
+                Accessors,
+                key_type,
+                keys...
+            >...
+        >();
 
         // construct the object itself
-        auto retval{factory.template create<Attributes...>(
-            std::forward<typename Attributes::type>(values)...
+        auto retval{factory.template create<property_by_key<keys>...>(
+            std::forward<typename property_by_key<keys>::type>(values)...
         )};
 
-        initialize_if_unused<decltype(factory), Attributes...>(
+        initialize_if_unused<decltype(factory), property_by_key<keys>...>(
             retval,
-            std::forward<typename Attributes::type>(values)...
+            std::forward<typename property_by_key<keys>::type>(values)...
         );
 
         return retval;
@@ -293,7 +298,9 @@ private:
         typename Constructor, ///< constructor to consider
         typename Attribute ///< attribute to set
     >
-    typename std::enable_if<!Constructor::template uses<Attribute>::value>::type
+    typename std::enable_if<
+        !Constructor::template uses<Attribute::key>::value
+    >::type
     initialize_single_if_unused(
         object_type& obj, ///< object on which to set the attribute's value
         typename Attribute::type&& value ///< value to set
@@ -307,7 +314,9 @@ private:
         typename Constructor,
         typename Attribute
     >
-    typename std::enable_if<Constructor::template uses<Attribute>::value>::type
+    typename std::enable_if<
+        Constructor::template uses<Attribute::key>::value
+    >::type
     initialize_single_if_unused(
         object_type& obj,
         typename Attribute::type&& value

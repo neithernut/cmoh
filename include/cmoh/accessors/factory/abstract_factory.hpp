@@ -62,10 +62,10 @@ struct abstract_factory {
      * are sufficient for constructing an object and false otherwise.
      */
     template <
-        typename ...PassedAttributes ///< attributes availible for construction
+        key_type ...keys ///< keys of attributes availible for construction
     >
     using is_initializable_from = util::conjunction<
-        typename util::contains<Attributes, PassedAttributes...>...
+        accesses<Attributes, key_type, keys...>...
     >;
 
     /**
@@ -75,9 +75,9 @@ struct abstract_factory {
      * is used for constructing an object and false otherwise.
      */
     template <
-        typename Attribute
+        key_type key ///< key of attribute to check
     >
-    using uses = util::contains<Attribute, Attributes...>;
+    using uses = util::disjunction<accesses<Attributes, key_type, key>...>;
 
     /**
      * Get the one property having a specific key
