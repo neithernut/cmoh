@@ -163,6 +163,23 @@ public:
         typename cmoh::accessors::property<Accessors>::type::key_type...
     >::type key_type;
 
+    /**
+     * Get the property identified by a specific key
+     *
+     * Instantiations will either yield the attribute type associated with the
+     * `key` supplied or void, if no such property could be found.
+     */
+    template <
+        key_type key
+    >
+    using property_by_key = typename util::common_type<
+        typename cmoh::accessors::property_by_key<
+            Accessors,
+            key_type,
+            key
+        >::type...
+    >::type;
+
 
     accessor_bundle(Accessors... accessors) :
             _accessors(std::forward<Accessors>(accessors)...) {}
