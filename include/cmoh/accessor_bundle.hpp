@@ -148,6 +148,9 @@ private:
     typedef selectable_items<Accessors...> accessors;
 
 public:
+    /**
+     * Common object type of all accessors
+     */
     typedef
         typename util::common_type<typename Accessors::object_type...>::type
         object_type;
