@@ -30,6 +30,7 @@
 
 // local includes
 #include <cmoh/utils.hpp>
+#include <cmoh/accessors/utils.hpp>
 
 
 namespace cmoh {
@@ -48,16 +49,23 @@ template <
 >
 struct abstract_factory {
     /**
+     * The common key type of all attributes used
+     */
+    typedef typename util::common_type<
+        typename property<Attributes>::type::key_type...
+    >::type key_type;
+
+    /**
      * Check whether the constructor can be invoked using some attributes
      *
      * Instantiations provide a member `value` which is `true` if the attributes
      * are sufficient for constructing an object and false otherwise.
      */
     template <
-        typename ...PassedAttributes ///< attributes availible for construction
+        key_type ...keys ///< keys of attributes availible for construction
     >
     using is_initializable_from = util::conjunction<
-        typename util::contains<Attributes, PassedAttributes...>...
+        accesses<Attributes, key_type, keys...>...
     >;
 
     /**
@@ -67,9 +75,26 @@ struct abstract_factory {
      * is used for constructing an object and false otherwise.
      */
     template <
-        typename Attribute
+        key_type key ///< key of attribute to check
     >
-    using uses = util::contains<Attribute, Attributes...>;
+    using uses = util::disjunction<accesses<Attributes, key_type, key>...>;
+
+    /**
+     * Get the one property having a specific key
+     *
+     * Provides either the attribute having the provided `key` or void via the
+     * member `type`.
+     */
+    template <
+        key_type key
+    >
+    using property_by_key = util::common_type<
+        typename std::conditional<
+            Attributes::key == key,
+            Attributes,
+            void
+        >::type...
+    >;
 };
 
 

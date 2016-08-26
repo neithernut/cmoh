@@ -143,6 +143,97 @@ public:
 };
 
 
+/**
+ * Check whether an accessor accesses one of several properties
+ *
+ * Provides the member `value`, which is true if the accessor provided accesses
+ * any property represented by `keys` and false otherwise.
+ */
+template <
+    typename Accessor, ///< accessor to check
+    typename KeyType, ///< key type to use
+    KeyType ...keys ///< keys to compare to
+>
+struct accesses {
+private:
+    template <
+        typename T,
+        KeyType key,
+        typename = void
+    >
+    struct helper : std::false_type {};
+
+    template <
+        KeyType key,
+        typename T
+    >
+    struct helper<T, key, util::void_t<decltype(T::key)>> :
+        std::integral_constant<bool, T::key == key> {};
+
+public:
+    static constexpr const bool value = util::disjunction<
+        helper<typename property<Accessor>::type, keys>...
+    >::value;
+};
+
+
+/**
+ * Get the one property having a specific key
+ *
+ * The property identified by `key` provided by the `Accessor` supplied is
+ * exposed via the member `type`. If no such property exists, `type` will be
+ * `void`.
+ */
+template <
+    typename Accessor, ///< accessor from which to extract the property
+    typename KeyType, ///< key type to use
+    KeyType key ///< key to compare to
+>
+struct property_by_key {
+private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper {
+        typedef typename std::conditional<
+            accesses<T, KeyType, key>::value,
+            typename property<T>::type,
+            void
+        >::type type;
+    };
+
+    template <typename T>
+    struct helper<T, util::void_t<typename T::template property_by_key<key>>> :
+        T::template property_by_key<key> {};
+
+public:
+    typedef typename helper<Accessor>::type type;
+};
+
+
+template <
+    typename Accessor,
+    typename KeyType,
+    KeyType ...keys
+>
+struct is_initializable_from {
+    private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper : std::false_type {};
+
+    template <typename T>
+    struct helper<T, util::void_t<typename T::template is_initializable_from<>>> :
+        T::template is_initializable_from<keys...> {};
+
+public:
+    static constexpr const bool value = helper<Accessor>::value;
+};
+
+
 }
 }
 

@@ -43,11 +43,9 @@ namespace cmoh {
  * Using this template, a programmer may declare attributes she wants to make
  * accessible to the cmoh system. Use like:
  *
- *     using foo = cmoh::attribute<int>;
- *
- * Note that using `typedef` instead of `using` may produce unintended results,
- * since the cmoh system relies on each attribute declaration being another
- * type.
+ *     enum attributes {foo, bar};
+ *     using foo_attr = cmoh::attribute<attributes, foo, int>;
+ *     using bar_attr = cmoh::attribute<attributes, bar, int>;
  *
  * The attributes themselves are not bound to a C++ type. Attributes do,
  * however, provide the `accessor()` static method for creating appropriate
@@ -62,11 +60,17 @@ namespace cmoh {
  * an interface.
  */
 template <
-    typename Attr ///< type of the attribute itself
+    typename KeyType, ///< type of the key used to identify the attribute
+    KeyType Key, ///< identifier of the attribute
+    typename Type ///< type of the attribute value
 >
 struct attribute {
-    typedef typename std::remove_cv<Attr>::type type;
-    static constexpr bool is_const = std::is_const<Attr>::value;
+    typedef KeyType key_type;
+    typedef typename std::remove_cv<Type>::type type;
+    static constexpr bool is_const = std::is_const<Type>::value;
+
+
+    static constexpr const key_type key = Key;
 
 
     /**
