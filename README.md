@@ -2,7 +2,7 @@ CMOH: C++ Meta Object Helpers
 =============================
 
 This is a header-only library providing an unintrusive meta object facility for
-the C++ language (requires at least C++11).
+the C++ language (requires at least C++14).
 
 Using this library, one can formally declare properties and specify how those
 are accessed in concrete C++ types using "accessors". Multiple accessors
@@ -30,7 +30,7 @@ and pkg-config will follow at some point.
 Dependencies
 ------------
 
-CMOH makes heavy use of templates and C++11 features. Hence, a C++11 compliant
+CMOH makes heavy use of templates and C++14 features. Hence, a C++14 compliant
 tool chain is required. We recommend using clang-3.8 or gcc-5.3 or later.
 
 
