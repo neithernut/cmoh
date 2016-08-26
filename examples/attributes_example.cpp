@@ -25,6 +25,7 @@
 
 // std includes
 #include <iostream>
+#include <cassert>
 
 // CMOH includes
 #include <cmoh/accessor_bundle.hpp>
@@ -33,6 +34,9 @@
 
 // local includes
 #include "person.hpp"
+
+// we _always_ want assertions
+#undef NDEBUG
 
 
 
@@ -78,6 +82,7 @@ int main(int argc, char* argv[]) {
     // We can read attributes from a real class via the accessor bundle
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
     std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
+    assert(accessors.get<name>(p) == "Hans");
 
     // We can also set attributes via the bundle
     std::cout << "Setting name..." << std::endl;
@@ -86,9 +91,7 @@ int main(int argc, char* argv[]) {
     // ...
     std::cout << "Name: " << accessors.get<name>(p) << std::endl;
     std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
-    if (accessors.get<name>(p) != "Hans Wurst") {
-        return 1;
-    }
+    assert(accessors.get<name>(p) == "Hans Wurst");
 
     return 0;
 }
