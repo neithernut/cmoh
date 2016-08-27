@@ -31,6 +31,8 @@
 
 // local includes
 #include <cmoh/accessors/utils.hpp>
+#include <cmoh/optional.hpp>
+#include <cmoh/properties.hpp>
 #include <cmoh/selectable_items.hpp>
 #include <cmoh/utils.hpp>
 
@@ -162,6 +164,55 @@ public:
     }
 
 
+    /**
+     * Get the value of a specific attribute from an object
+     *
+     * \returns the value of the attribute
+     */
+    template <
+        typename Type ///< type of the attribute to get
+    >
+    optional<Type>
+    get(
+        object_type const& obj, ///< object from which to get the value
+        key_type key ///< key of the attribute to get
+    ) const {
+        optional<Type> retval;
+
+        visit_attributes<Type>([&retval, &obj, key] (auto accessor) {
+            if (cmoh::accessors::property<decltype(accessor)>::type::key != key)
+                return;
+            retval = accessor.get(obj);
+        });
+
+        return retval;
+    }
+
+    /**
+     * Set the value of a specific attribute on an object
+     */
+    template <
+        typename Type ///< type of the attribute to get
+    >
+    bool
+    set(
+        object_type& obj, ///< object on which to set the attribute
+        key_type key, ///< key of the attribute to get
+        Type&& value ///< value to set
+    ) const {
+        bool retval = false;
+
+        visit_attributes<Type>([&retval, &obj, key, &value] (auto accessor) {
+            if (cmoh::accessors::property<decltype(accessor)>::type::key != key)
+                return;
+            accessor.set(obj, std::forward<Type>(value));
+            retval = true;
+        });
+
+        return retval;
+    }
+
+
 private:
     /**
      * Initialize attributes which are not used by a specific constructor
@@ -229,6 +280,23 @@ private:
         object_type& obj,
         typename Attribute::type&& value
     ) const {}
+
+    template <
+        typename Type,
+        typename Function
+    >
+    void
+    visit_attributes(
+        Function&& function
+    ) const {
+        _accessors.template visit<
+            Function,
+            properties::is_attribute_with_type<
+                typename cmoh::accessors::property<Accessors>::type,
+                Type
+            >...
+        >(std::forward<Function>(function));
+    }
 
 
     accessors _accessors;
