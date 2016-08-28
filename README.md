@@ -22,9 +22,10 @@ are done from a user's point of view.
 Using this library
 ------------------
 
-As this is a header-only library, no linking is required. Make sure you add
-`<installation_prefix>/include` to your include directories. Support for CMake
-and pkg-config will follow at some point.
+As this is a header-only library, no linking is required. Both a CMake module
+and a pkg-config-file are installed along with the header files. The library is
+called "cmoh" in both cases. If you are using neither CMake nor pkg-config-based
+setups, add `<installation_prefix>/include` to your include directories.
 
 
 Dependencies

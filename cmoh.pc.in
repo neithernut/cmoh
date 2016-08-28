@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+includedir=${prefix}/include
+
+Name: cmoh
+Description: C++ Meta Object Helpers
+Version: @PROJECT_VERSION@
+URL: http://github.com/neithernut/cmoh
+
+Requires:
+Cflags: -I${includedir}
+
