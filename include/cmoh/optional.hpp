@@ -25,6 +25,29 @@
 #define CMOH_OPTIONAL_HPP__
 
 
+// We try to detect whether a standard `optional` is availible, but only for
+// post-C++14 (we don't expect a C++14 STL to ship it).
+#if __cplusplus > 201402L
+# if __has_include(<optional>)
+#  define has_optional 1
+# elif __has_include(<experimental/optional>)
+#  define has_experimental_optional 1
+# endif
+#endif
+
+
+// Use one of the availible `optional` implementations
+#ifdef has_optional
+#include <optional>
+namespace cmoh { template <class T> using optional = std::optional<T>; }
+#elif has_experimental_optional
+#include <experimental/optional>
+namespace cmoh {
+    template <class T> using optional = std::experimental::optional<T>;
+}
+#else
+
+
 // std includes
 #include <utility>
 
@@ -205,4 +228,5 @@ private:
 
 
 
+#endif
 #endif
