@@ -60,6 +60,18 @@ template <
 struct selectable_items {
     template <typename...> using type_of = void;
     template <typename...> void get() {}
+
+    /**
+     * Visit all items, optionally matching some compile time critirea
+     */
+    template <
+        typename Function,
+        typename ...BoolTypes
+    >
+    void
+    visit(
+        Function&& func ///< function to apply
+    ) const {}
 };
 
 // Specialization for at least one parameter
@@ -126,6 +138,66 @@ public:
     >::type
     get() const noexcept {
         return _next.template get<BoolTypes...>();
+    }
+
+
+    template <
+        typename Function,
+        typename BoolType0 = std::true_type,
+        typename ...BoolTypes
+    >
+    typename std::enable_if<BoolType0::value>::type
+    visit(
+        Function&& func
+    ) const {
+        func(_value);
+        _next.template visit<Function, BoolTypes...>(
+            std::forward<Function>(func)
+        );
+    }
+
+    template <
+        typename Function,
+        typename BoolType0 = std::true_type,
+        typename ...BoolTypes
+    >
+    typename std::enable_if<!BoolType0::value>::type
+    visit(
+        Function&& func
+    ) const {
+        _next.template visit<Function, BoolTypes...>(
+            std::forward<Function>(func)
+        );
+    }
+
+
+    template <
+        typename Function,
+        typename BoolType0 = std::true_type,
+        typename ...BoolTypes
+    >
+    typename std::enable_if<BoolType0::value>::type
+    visit(
+        Function&& func
+    ) {
+        func(_value);
+        _next.template visit<Function, BoolTypes...>(
+            std::forward<Function>(func)
+        );
+    }
+
+    template <
+        typename Function,
+        typename BoolType0 = std::true_type,
+        typename ...BoolTypes
+    >
+    typename std::enable_if<!BoolType0::value>::type
+    visit(
+        Function&& func
+    ) {
+        _next.template visit<Function, BoolTypes...>(
+            std::forward<Function>(func)
+        );
     }
 };
 
