@@ -291,8 +291,10 @@ private:
     ) const {
         _accessors.template visit<
             Function,
-            properties::is_attribute_with_type<
-                typename cmoh::accessors::property<Accessors>::type,
+            std::is_convertible<
+                typename properties::type_of_attribute<
+                    typename cmoh::accessors::property<Accessors>::type
+                >::type,
                 Type
             >...
         >(std::forward<Function>(function));

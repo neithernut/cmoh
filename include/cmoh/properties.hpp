@@ -34,6 +34,32 @@ namespace properties {
 
 
 /**
+ * Get the type of an attribute
+ *
+ * Exports the attribute's type via the member `type`. If the property is not
+ * an attribute, `type` will be void.
+ */
+template <
+    typename Property, ///< property to check
+    typename = void
+>
+struct type_of_attribute {
+    typedef void type;
+};
+
+// Specialization for attributes
+template <
+    typename Property
+>
+struct type_of_attribute<
+    Property,
+    util::void_t<typename Property::type>
+> {
+    typedef typename Property::type type;
+};
+
+
+/**
  * Check whether a property is an attribute with a specific type
  *
  * If the property supplied is an attribute with the type `Type`, the static
