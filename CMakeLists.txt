@@ -17,6 +17,7 @@ target_include_directories(cmoh INTERFACE
 enable_testing()
 add_subdirectory(examples)
 add_subdirectory(test)
+add_subdirectory(doc)
 
 
 # installation
