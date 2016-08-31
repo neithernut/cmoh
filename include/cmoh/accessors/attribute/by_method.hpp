@@ -38,9 +38,8 @@ namespace attribute {
 /**
  * Attribute accessor using methods
  *
- * This accessor provides access to the attribute via methods of the target
- * C++ struct/class. It is constructed from an appropriate getter and,
- * optionally, a setter.
+ * This accessor provides read-only access to the attribute via methods of the
+ * target C++ struct/class. It is constructed from an appropriate getter.
  *
  * Users are discouraged from constructing method accessors directly. Use
  * one of the `accessor()` overloads provided by the attribute instead.
@@ -48,31 +47,25 @@ namespace attribute {
 template <
     typename Attribute, ///< attribute type being accessed
     typename ObjType, ///< type of the class or struct with the attribute
-    typename GetterVal, ///< type of the value returned from the getter
-    typename SetterArg ///< effective type of the setter argument
+    typename GetterVal ///< type of the value returned from the getter
 >
-struct by_method {
+struct by_method_const {
     typedef Attribute attribute; ///< type of attribute being accessed
     typedef ObjType object_type; ///< object being accessed
 
     typedef GetterVal(object_type::* getter)() const;
-    typedef void(object_type::* setter)(SetterArg);
 
 
     static_assert(
         std::is_convertible<GetterVal, typename attribute::type>::value,
         "Value returned by getter is not convertible to attribute type"
     );
-    static_assert(
-        std::is_convertible<typename attribute::type, SetterArg>::value,
-        "Attribute's type is not convertible to type required by setter"
-    );
 
 
-    by_method(getter getter, setter setter = nullptr)
-        : _getter(getter), _setter(setter) {};
-    by_method(by_method const&) = default;
-    by_method(by_method&&) = default;
+    by_method_const(getter getter) : _getter(getter) {};
+    by_method_const(by_method_const const&) = default;
+    by_method_const(by_method_const&&) = default;
+
 
     /**
      * Get the attribute from an object
@@ -86,6 +79,47 @@ struct by_method {
         return (obj.*_getter)();
     }
 
+private:
+    getter _getter;
+};
+
+
+/**
+ * Attribute accessor using methods
+ *
+ * This accessor provides access to the attribute via methods of the target
+ * C++ struct/class. It is constructed from an appropriate getter and a setter.
+ *
+ * Users are discouraged from constructing method accessors directly. Use
+ * one of the `accessor()` overloads provided by the attribute instead.
+ */
+template <
+    typename Attribute, ///< attribute type being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename GetterVal, ///< type of the value returned from the getter
+    typename SetterArg ///< effective type of the setter argument
+>
+struct by_method : by_method_const<Attribute, ObjType, GetterVal> {
+    typedef Attribute attribute; ///< type of attribute being accessed
+    typedef ObjType object_type; ///< object being accessed
+
+    typedef GetterVal(object_type::* getter)() const;
+    typedef void(object_type::* setter)(SetterArg);
+
+
+    static_assert(
+        std::is_convertible<typename attribute::type, SetterArg>::value,
+        "Attribute's type is not convertible to type required by setter"
+    );
+
+
+    by_method(getter getter, setter setter) :
+        by_method_const<Attribute, ObjType, GetterVal>(getter),
+        _setter(setter) {};
+    by_method(by_method const&) = default;
+    by_method(by_method&&) = default;
+
+
     /**
      * Set the attribute on an object
      */
@@ -96,8 +130,8 @@ struct by_method {
     ) const {
         (obj.*_setter)(std::forward<typename attribute::type>(value));
     }
+
 private:
-    getter _getter;
     setter _setter;
 };
 
@@ -111,12 +145,12 @@ template <
 constexpr
 typename std::enable_if<
     Attribute::is_const,
-    by_method<Attribute, ObjType, Value, Value>
+    by_method_const<Attribute, ObjType, Value>
 >::type
 make_accessor(
-    typename by_method<Attribute, ObjType, Value, Value>::getter getter
+    typename by_method_const<Attribute, ObjType, Value>::getter getter
 ) {
-    return by_method<Attribute, ObjType, Value, Value>(getter, nullptr);
+    return by_method_const<Attribute, ObjType, Value>(getter);
 }
 
 template <
