@@ -78,7 +78,7 @@ template <
     typename ...Items
 >
 struct conjunction<Item0, Items...> {
-    static constexpr bool value = Item0::value && conjunction<Items...>::value;
+    enum : bool {value = Item0::value && conjunction<Items...>::value};
 };
 
 
@@ -102,7 +102,7 @@ template <
     typename ...Items
 >
 struct disjunction<Item0, Items...> {
-    static constexpr bool value = Item0::value || disjunction<Items...>::value;
+    enum : bool {value = Item0::value || disjunction<Items...>::value};
 };
 
 
