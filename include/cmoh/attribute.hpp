@@ -68,7 +68,7 @@ template <
 struct attribute {
     typedef KeyType key_type;
     typedef typename std::remove_cv<Type>::type type;
-    static constexpr bool is_const = std::is_const<Type>::value;
+    enum : bool {is_const = std::is_const<Type>::value};
 
 
     static constexpr const key_type key = Key;

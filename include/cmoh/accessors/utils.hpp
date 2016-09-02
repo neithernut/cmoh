@@ -171,9 +171,9 @@ private:
         std::integral_constant<bool, T::key == key> {};
 
 public:
-    static constexpr const bool value = util::disjunction<
+    enum : bool {value = util::disjunction<
         helper<typename property<Accessor>::type, keys>...
-    >::value;
+    >::value};
 };
 
 
@@ -230,7 +230,7 @@ struct is_initializable_from {
         T::template is_initializable_from<keys...> {};
 
 public:
-    static constexpr const bool value = helper<Accessor>::value;
+    enum : bool {value = helper<Accessor>::value};
 };
 
 
