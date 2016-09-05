@@ -213,6 +213,33 @@ public:
     }
 
 
+    /**
+     * Calls a function with every accessor accessing a property
+     *
+     * This method applies the function supplied on every accessor which
+     * accesses a single property. The function will be calles with the
+     * accessors as the only argument.
+     */
+    template <
+        typename Function
+    >
+    void
+    visit_properties(
+        Function&& function
+    ) const {
+        _accessors.template visit<
+            Function,
+            std::integral_constant<
+                bool,
+                !std::is_same<
+                    typename cmoh::accessors::property<Accessors>::type,
+                    void
+                >::value
+            >...
+        >(std::forward<Function>(function));
+    }
+
+
 private:
     /**
      * Initialize attributes which are not used by a specific constructor
