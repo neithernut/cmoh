@@ -2,21 +2,18 @@ CMOH: C++ Meta Object Helpers
 =============================
 
 This is a header-only library providing an unintrusive meta object facility for
-the C++ language (requires at least C++14).
+the C++ language (requires at least C++14). It provides utilities for declaring
+abstract properties and binding them to properties of concrete C++ types. CMOH
+is designed to be used as a base for by (de)serialization and RPC libraries.
 
-Using this library, one can formally declare properties and specify how those
-are accessed in concrete C++ types using "accessors". Multiple accessors
-operating on one C++ type can be bundled together in an "accessor bundle"
-which provides a uniform way of accessing an object's property based on the
-aforementioned attribute declarations.
+With CMOH, you can
+ * declare abstract properties (e.g. attributes),
+ * specify how these properties are accessed for a specific C++ type and
+ * bundle this information, giving you access to the properties by a key of
+   user-defined type.
 
-Such a bundle may then be used by other libraries to access objects' properties
-and thus provide serializing, parsing or remote method invocation based on a
-formal interface specification.
-
-This library is still heavily in development. Proper documentation will follow
-at some point. For now, have a look at the examples to get an idea of how things
-are done from a user's point of view.
+Currently, CMOH is in early development. However, a preliminary user
+[uesr documentation](doc/README.md) does exist, as well as examples.
 
 
 Using this library
@@ -55,25 +52,6 @@ Licensing
 ---------
 
 This library is licensed under the MIT license. Have a look at the LICENSE file
-for more information. The following paragraphs are a rationale for the choice of
-the license by the original author, Julian Ganz:
-
-The license was chosen because this is an infrastructure project. I primarily
-intended to make my own life, and potentially the life of others, easier. This
-also includes future possible work on proprietary products. Hence, I chose a
-permissive license.
-
-I am aware of arguments that permissive licenses would diminish contributions
-from corporate projects using that code. I'm fine with this. This is a
-(personal) infrastructure project, a cathedral, not a bazaar. My goal is not to
-attract a large community of developers creeping in a ton of features.
-
-As for corporations which keep fixes or adjustments for themselves while ripping
-of the work of others: I have no interest in working with idiots who do not
-understand the benefits of sharing the effort of developing and maintaining a
-piece of software. Let them write their parallel workarounds and extensions. Let
-them experience the pain of maintaining them and eventually being unable to
-trivially upgrade to a new version. Let them waste their precious manpower on
-that.
+for more information.
 
 
