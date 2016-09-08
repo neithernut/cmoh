@@ -23,9 +23,12 @@
  */
 
 
+// we _always_ want assertions
+#undef NDEBUG
+
 // std includes
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 // CMOH includes
 #include <cmoh/accessor_bundle.hpp>
@@ -34,9 +37,6 @@
 
 // local includes
 #include "person.hpp"
-
-// we _always_ want assertions
-#undef NDEBUG
 
 
 
