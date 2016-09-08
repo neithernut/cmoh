@@ -29,6 +29,31 @@ Users will most likely never touch an accessor, but feed them directly to an
 [accessor bundle](AccessorBundle.md) instead.
 
 
+Key types to use
+----------------
+
+Properties are represented by (full) specializations of templates. Keys are
+generally provided as template arguments in these specializations. This was
+partly motivated by the need for keys to be comparable at compile time.
+
+The non-type template parameters are limited to a certain set of values which
+the compiler can evaluate at compile time. For example, one cannot simply pass
+a string as a template parameter. One can, however, pass enumerations, integral
+values and references to certain objects.
+
+Generally, CMOH compares keys using the `==` operator. Furthermore, overloads of
+`operator == ()` must be declared `constexpr` to be of use. Hence, any class
+with appropriate constructors and a `constexpr operator == ()` overload can be
+used as a key. In those cases, the key type would be a const reference.
+
+In many cases, enumerations and integers should be sufficient for the user.
+If a string key type is required, we recommend using `cmoh::basic_string`, which
+is a predefinition/alias of `std::basic_string` (expected in C++17) using
+adapted character traits, making it suitable for compile time comparison.
+
+The use of different string types is demonstrated in the examples.
+
+
 Attributes
 ----------
 

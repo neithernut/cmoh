@@ -158,22 +158,18 @@ struct accesses {
 private:
     template <
         typename T,
-        KeyType key,
         typename = void
     >
     struct helper : std::false_type {};
 
     template <
-        KeyType key,
         typename T
     >
-    struct helper<T, key, util::void_t<decltype(T::key)>> :
-        std::integral_constant<bool, T::key == key> {};
+    struct helper<T, util::void_t<decltype(T::key)>> :
+        util::disjunction<std::integral_constant<bool, T::key == keys>...> {};
 
 public:
-    enum : bool {value = util::disjunction<
-        helper<typename property<Accessor>::type, keys>...
-    >::value};
+    enum : bool {value = helper<typename property<Accessor>::type>::value};
 };
 
 

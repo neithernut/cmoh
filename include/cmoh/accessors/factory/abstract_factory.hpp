@@ -90,7 +90,7 @@ struct abstract_factory {
     >
     using property_by_key = util::common_type<
         typename std::conditional<
-            Attributes::key == key,
+            Attributes::key == static_cast<decltype(Attributes::key)>(key),
             Attributes,
             void
         >::type...

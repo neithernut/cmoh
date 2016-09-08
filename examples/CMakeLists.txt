@@ -25,9 +25,22 @@ add_test(
 )
 
 
+# dynamic key example
+add_executable(string_key_example EXCLUDE_FROM_ALL
+    string_key_example.cpp
+    person.cpp
+)
+target_link_libraries(string_key_example cmoh)
+add_test(
+    NAME string_key
+    COMMAND string_key_example --exe $<TARGET_FILE:string_key_example>
+)
+
+
 # provide a convenience target to build all examples
 add_custom_target(examples DEPENDS
     attributes_example
     dynamic_key_example
+    string_key_example
 )
 

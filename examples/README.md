@@ -13,5 +13,7 @@ examples. Note that some may build on top of each other.
    statically as well as construction of an object via an accessor bundle.
  * `dynamic_key_example.cpp` demonstrates accessing an attribute in an object
    via a key given at run time.
+ * `string_key_example.cpp` demonstrates the use of `cmoh::string_view` for
+   property keys.
 
 

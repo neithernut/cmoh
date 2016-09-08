@@ -31,6 +31,13 @@ and can be disabled using the following preprocessor definitions:
 It may also be of interest that CMOH does not allocate or free any memory,
 unless a smart pointer feature is used.
 
+The class templates `cmoh::char_traits` and `cmoh::basic_string_view` (and
+specializations) make use of additional STL features and may thus not be
+suitable for some environments. However, those classes are only used for
+addressing properties by strings and at least one of the header files
+`<cmoh/char_traits.hpp>` and `<cmoh/string_view>` must be included by the user
+in these cases.
+
 
 Versioning scheme
 -----------------

@@ -71,7 +71,8 @@ struct attribute {
     enum : bool {is_const = std::is_const<Type>::value};
 
 
-    static constexpr const key_type key = Key;
+    static constexpr const typename std::remove_reference<key_type>::type key =
+        Key;
 
 
     /**
