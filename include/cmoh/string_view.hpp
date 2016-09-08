@@ -25,15 +25,40 @@
 #define CMOH_STRING_VIEW_HPP__
 
 
+// We try to detect whether a standard `string_view` is available, but only for
+// post-C++14 (we don't expect a C++14 STL to ship it). We don't consider the
+// `experimental/string_view` header, since at least one implementation (the one
+// shipped with GCC), lacks `constexpr` in critical places.
+#if __cplusplus > 201402L
+# if __has_include(<string_view>)
+#  define has_string_view 1
+# endif
+#endif
+
+
+// local includes
+#include <cmoh/char_traits.hpp>
+
+
+// use one of the `string_view` implementations
+#ifdef has_string_view
+#include <string_view>
+namespace cmoh {
+    template <
+        typename CharT,
+        typename Traits = char_traits<CharT>
+    >
+    using basic_string_view = std::basic_string_view<CharT, Traits>;
+}
+#else
+
+
 // std includes
 #include <algorithm>
 #include <cstddef>
 #include <limits>
 #include <ostream>
 #include <stdexcept>
-
-// local includes
-#include <cmoh/char_traits.hpp>
 
 
 namespace cmoh {
@@ -227,12 +252,6 @@ private:
 };
 
 
-typedef basic_string_view<char> string_view;
-typedef basic_string_view<wchar_t> wstring_view;
-typedef basic_string_view<char16_t> u16string_view;
-typedef basic_string_view<char32_t> u32string_view;
-
-
 }
 
 
@@ -306,6 +325,19 @@ constexpr bool operator >= (
 // TODO: outstream
 
 // TODO: hash
+
+
+#endif
+
+
+
+
+namespace cmoh {
+    typedef basic_string_view<char> string_view;
+    typedef basic_string_view<wchar_t> wstring_view;
+    typedef basic_string_view<char16_t> u16string_view;
+    typedef basic_string_view<char32_t> u32string_view;
+}
 
 
 
