@@ -170,16 +170,17 @@ public:
      * \returns the value of the attribute
      */
     template <
-        typename Type ///< type of the attribute to get
+        typename Type, ///< type of the attribute to get
+        typename KeyType = key_type ///< key type to use
     >
     optional<Type>
     get(
         object_type const& obj, ///< object from which to get the value
-        key_type key ///< key of the attribute to get
+        KeyType&& key ///< key of the attribute to get
     ) const {
         optional<Type> retval;
 
-        visit_attributes<Type>([&retval, &obj, key] (auto accessor) {
+        visit_attributes<Type>([&] (auto accessor) {
             if (cmoh::accessors::key(accessor) != key)
                 return;
             retval = accessor.get(obj);
@@ -192,17 +193,18 @@ public:
      * Set the value of a specific attribute on an object
      */
     template <
-        typename Type ///< type of the attribute to get
+        typename Type, ///< type of the attribute to get
+        typename KeyType = key_type ///< key type to use
     >
     bool
     set(
         object_type& obj, ///< object on which to set the attribute
-        key_type key, ///< key of the attribute to get
+        KeyType&& key, ///< key of the attribute to get
         Type&& value ///< value to set
     ) const {
         bool retval = false;
 
-        visit_attributes<Type>([&retval, &obj, key, &value] (auto accessor) {
+        visit_attributes<Type>([&] (auto accessor) {
             if (cmoh::accessors::key(accessor) != key)
                 return;
             accessor.set(obj, std::forward<Type>(value));
