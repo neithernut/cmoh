@@ -329,7 +329,7 @@ template <
 std::basic_ostream<CharT, Traits>&
 operator << (
     std::basic_ostream<CharT, Traits>& stream,
-    cmoh::basic_string_view <CharT, Traits> view
+    cmoh::basic_string_view<CharT, Traits> view
 ) {
     auto len = view.size();
     auto pos = view.data();
@@ -357,6 +357,28 @@ namespace cmoh {
     typedef basic_string_view<wchar_t> wstring_view;
     typedef basic_string_view<char16_t> u16string_view;
     typedef basic_string_view<char32_t> u32string_view;
+}
+
+
+// workaround to interface our custom char traits with the outside world
+template <
+    class CharT
+>
+std::basic_ostream<CharT, std::char_traits<CharT>>&
+operator << (
+    std::basic_ostream<CharT, std::char_traits<CharT>>& stream,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> view
+) {
+    auto len = view.size();
+    auto pos = view.data();
+
+    while (len > 0) {
+        stream.put(*pos);
+        ++pos;
+        --len;
+    }
+
+    return stream;
 }
 
 

@@ -78,3 +78,14 @@ compatible, the access methods will behave as if the attribute does not exist.
    the method will return `true`. Otherwise, `false` will be returned.
 
 
+Visiting properties
+-------------------
+
+Using the method
+
+    template <typename Function>
+    void visit_properties(Function&& function) const
+
+one can apply a `function` to all accessors accessing an actual, single,
+property. Normally, this applies to all accessors except factories.
+

@@ -57,32 +57,33 @@ using name_attr = cmoh::attribute<cmoh::string_view const&, name, std::string>;
 using age_attr = cmoh::attribute<cmoh::string_view const&, age, const std::chrono::hours>;
 
 
+// work-around for durations not being printable
+std::ostream&
+operator << (std::ostream& stream, std::chrono::hours const& value) {
+    return stream << value.count() << " hours";
+}
+
+
 int main(int argc, char* argv[]) {
+    // We create an accessor bundle.
     auto accessors = bundle(
         cmoh::factory<person, birthday_attr>(),
         name_attr::accessor<person>(&person::name, &person::set_name),
         age_attr::accessor<person>(&person::age)
     );
 
-
+    // We can use the constants just like other key types, e.g. for object
+    // construction.
     person p = accessors.create<birthday, name>(
         std::chrono::system_clock::now() - std::chrono::hours(24),
         "Hans"
     );
 
-    // We can read attributes from a real class via the accessor bundle
-    std::cout << "Name: " << accessors.get<name>(p) << std::endl;
-    std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
-    assert(accessors.get<name>(p) == "Hans");
-
-    // We can also set attributes via the bundle
-    std::cout << "Setting name..." << std::endl;
-    accessors.set<name>(p, "Hans Wurst");
-
-    // ...
-    std::cout << "Name: " << accessors.get<name>(p) << std::endl;
-    std::cout << "Age: " << accessors.get<age>(p).count() << " hours" << std::endl;
-    assert(accessors.get<name>(p) == "Hans Wurst");
+    // Having strings, we can pretty-print the object using a visitor.
+    accessors.visit_properties([&] (auto accessor) {
+        std::cout << cmoh::accessors::key(accessor) << ": " << accessor.get(p);
+        std::cout << std::endl;
+    });
 
     return 0;
 }
