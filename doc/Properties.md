@@ -12,8 +12,8 @@ specific parameters (see below for details), in that order.
 
 The key is used or addressing properties in an object. The idea is to use the
 key for binding a property to an external representation/an RPC interface in
-libraries. Hence, the key is always exported as `<property>::key` while the key
-type is exported as the member type `<property>::key_type`.
+libraries. Hence, the key is always exported as `<property>::key()` while the
+key type is exported as the member type `<property>::key_type`.
 
 Properties also expose a static method `accessor()`, which serves as a factory
 for (potentially diverse) accessor types available for the type of property.

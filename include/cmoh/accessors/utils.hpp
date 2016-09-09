@@ -122,12 +122,12 @@ private:
         accessor_type acc_type
     >
     struct helper {
-        typedef void type;
+        typedef T type;
     };
 
     template <typename T>
     struct helper<T, factory_implementation> {
-        typedef T type;
+        typedef void type;
     };
 
     template <typename T>
@@ -141,6 +141,50 @@ public:
         accessor_type_of<Accessor>::value
     >::type type;
 };
+
+
+/**
+ * Query an accessor's key type
+ */
+template <
+    typename Accessor
+>
+struct key_type {
+private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper {
+        typedef typename cmoh::accessors::property<Accessor>::type::key_type
+            type;
+    };
+
+    template <
+        typename T
+    >
+    struct helper<T, util::void_t<typename T::key_type>> {
+        typedef typename Accessor::key_type type;
+    };
+
+public:
+    typedef typename helper<Accessor>::type type;
+};
+
+
+/**
+ * Query the key associated with an accessor's attribute
+ */
+template <
+    typename Accessor
+>
+constexpr
+typename std::remove_reference<typename key_type<Accessor>::type>::type
+key(
+    Accessor const& accessor
+) {
+    return cmoh::accessors::property<Accessor>::type::key();
+}
 
 
 /**
@@ -165,8 +209,8 @@ private:
     template <
         typename T
     >
-    struct helper<T, util::void_t<decltype(T::key)>> :
-        util::disjunction<std::integral_constant<bool, T::key == keys>...> {};
+    struct helper<T, util::void_t<decltype(T::key())>> :
+        util::disjunction<std::integral_constant<bool, T::key() == keys>...> {};
 
 public:
     enum : bool {value = helper<typename property<Accessor>::type>::value};
