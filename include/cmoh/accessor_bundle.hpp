@@ -70,7 +70,7 @@ public:
      * Common key type of all accessors
      */
     typedef typename util::common_type<
-        typename cmoh::accessors::property<Accessors>::type::key_type...
+        typename cmoh::accessors::key_type<Accessors>::type...
     >::type key_type;
 
     /**
