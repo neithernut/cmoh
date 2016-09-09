@@ -329,7 +329,7 @@ template <
 std::basic_ostream<CharT, Traits>&
 operator << (
     std::basic_ostream<CharT, Traits>& stream,
-    cmoh::basic_string_view <CharT, Traits> view
+    cmoh::basic_string_view<CharT, Traits> view
 ) {
     auto len = view.size();
     auto pos = view.data();
