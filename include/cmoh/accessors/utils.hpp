@@ -122,12 +122,12 @@ private:
         accessor_type acc_type
     >
     struct helper {
-        typedef void type;
+        typedef T type;
     };
 
     template <typename T>
     struct helper<T, factory_implementation> {
-        typedef T type;
+        typedef void type;
     };
 
     template <typename T>
