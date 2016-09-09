@@ -51,6 +51,10 @@ If a string key type is required, we recommend using `cmoh::basic_string`, which
 is a predefinition/alias of `std::basic_string` (expected in C++17) using
 adapted character traits, making it suitable for compile time comparison.
 
+Note that for some compilers (e.g. clang), it may be necessary to include
+`<cmoh/string_view>` prior to other cmoh headers for the `operator == ()`
+overload to be found.
+
 The use of different string types is demonstrated in the examples.
 
 
