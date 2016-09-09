@@ -322,7 +322,27 @@ constexpr bool operator >= (
 }
 
 
-// TODO: outstream
+template <
+    class CharT,
+    class Traits
+>
+std::basic_ostream<CharT, Traits>&
+operator << (
+    std::basic_ostream<CharT, Traits>& stream,
+    cmoh::basic_string_view <CharT, Traits> view
+) {
+    auto len = view.size();
+    auto pos = view.data();
+
+    while (len > 0) {
+        stream.put(*pos);
+        ++pos;
+        --len;
+    }
+
+    return stream;
+}
+
 
 // TODO: hash
 
