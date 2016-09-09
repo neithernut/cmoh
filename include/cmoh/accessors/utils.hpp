@@ -144,6 +144,35 @@ public:
 
 
 /**
+ * Query an accessor's key type
+ */
+template <
+    typename Accessor
+>
+struct key_type {
+private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper {
+        typedef typename cmoh::accessors::property<Accessor>::type::key_type
+            type;
+    };
+
+    template <
+        typename T
+    >
+    struct helper<T, util::void_t<typename T::key_type>> {
+        typedef typename Accessor::key_type type;
+    };
+
+public:
+    typedef typename helper<Accessor>::type type;
+};
+
+
+/**
  * Check whether an accessor accesses one of several properties
  *
  * Provides the member `value`, which is true if the accessor provided accesses
