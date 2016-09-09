@@ -173,6 +173,21 @@ public:
 
 
 /**
+ * Query the key associated with an accessor's attribute
+ */
+template <
+    typename Accessor
+>
+constexpr
+typename std::remove_reference<typename key_type<Accessor>::type>::type
+key(
+    Accessor const& accessor
+) {
+    return cmoh::accessors::property<Accessor>::type::key();
+}
+
+
+/**
  * Check whether an accessor accesses one of several properties
  *
  * Provides the member `value`, which is true if the accessor provided accesses
@@ -194,8 +209,8 @@ private:
     template <
         typename T
     >
-    struct helper<T, util::void_t<decltype(T::key)>> :
-        util::disjunction<std::integral_constant<bool, T::key == keys>...> {};
+    struct helper<T, util::void_t<decltype(T::key())>> :
+        util::disjunction<std::integral_constant<bool, T::key() == keys>...> {};
 
 public:
     enum : bool {value = helper<typename property<Accessor>::type>::value};
