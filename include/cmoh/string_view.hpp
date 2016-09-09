@@ -360,6 +360,28 @@ namespace cmoh {
 }
 
 
+// workaround to interface our custom char traits with the outside world
+template <
+    class CharT
+>
+std::basic_ostream<CharT, std::char_traits<CharT>>&
+operator << (
+    std::basic_ostream<CharT, std::char_traits<CharT>>& stream,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> view
+) {
+    auto len = view.size();
+    auto pos = view.data();
+
+    while (len > 0) {
+        stream.put(*pos);
+        ++pos;
+        --len;
+    }
+
+    return stream;
+}
+
+
 
 
 #endif
