@@ -18,7 +18,7 @@ supported (supply `.` as the source directory).
 
 The examples can also be build using CMake. Once you have initialized the build
 environment, run `make examples`. `make pdfdoc` builds this documentation. This
-functionality is, however, only availible if the build system was initialized
+functionality is, however, only available if the build system was initialized
 with [pandoc](http://pandoc.org/) installed.
 
 
