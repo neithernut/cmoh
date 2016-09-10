@@ -405,19 +405,10 @@ template <
 >
 std::basic_ostream<CharT, std::char_traits<CharT>>&
 operator << (
-    std::basic_ostream<CharT, std::char_traits<CharT>>& stream,
-    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> view
+    std::basic_ostream<CharT>& stream,
+    cmoh::basic_string_view<CharT> view
 ) {
-    auto len = view.size();
-    auto pos = view.data();
-
-    while (len > 0) {
-        stream.put(*pos);
-        ++pos;
-        --len;
-    }
-
-    return stream;
+    return stream << std_traits_using(view);
 }
 
 
