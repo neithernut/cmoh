@@ -13,7 +13,7 @@ With CMOH, you can
    user-defined type.
 
 Currently, CMOH is in early development. However, a preliminary user
-[uesr documentation](doc/README.md) does exist, as well as examples.
+[user documentation](doc/README.md) does exist, as well as examples.
 
 
 Using this library
