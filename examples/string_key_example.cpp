@@ -32,6 +32,7 @@
 
 // CMOH includes
 #include <cmoh/string_view.hpp>
+#include <cmoh/string_utils.hpp>
 
 #include <cmoh/accessor_bundle.hpp>
 #include <cmoh/attribute.hpp>
@@ -63,7 +64,6 @@ operator << (std::ostream& stream, std::chrono::hours const& value) {
     return stream << value.count() << " hours";
 }
 
-
 int main(int argc, char* argv[]) {
     // We create an accessor bundle.
     auto accessors = bundle(
@@ -80,10 +80,17 @@ int main(int argc, char* argv[]) {
     );
 
     // Having strings, we can pretty-print the object using a visitor.
-    accessors.visit_properties([&] (auto accessor) {
+    auto printer = [&] (auto accessor) {
         std::cout << cmoh::accessors::key(accessor) << ": " << accessor.get(p);
         std::cout << std::endl;
-    });
+    };
+    accessors.visit_properties(printer);
+
+    std::cout << std::endl;
+
+    // we can also address properties using strings at run time
+    assert(accessors.set<std::string>(p, std::string("name"), "Hans Wurst"));
+    accessors.visit_properties(printer);
 
     return 0;
 }
