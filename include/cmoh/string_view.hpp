@@ -361,6 +361,41 @@ typedef basic_string_view<char16_t> u16string_view;
 typedef basic_string_view<char32_t> u32string_view;
 
 
+/**
+ * Create a string view with the standard char traits
+ */
+template <
+    typename CharT,
+    typename Traits
+>
+constexpr
+basic_string_view<CharT, std::char_traits<CharT>>
+std_traits_using(
+    basic_string_view<CharT, Traits> const& view
+) {
+    return basic_string_view<CharT, std::char_traits<CharT>>(
+        view.data(),
+        view.size()
+    );
+}
+
+
+/**
+ * Create a string view with the cmoh char traits
+ */
+template <
+    typename CharT,
+    typename Traits
+>
+constexpr
+basic_string_view<CharT>
+cmoh_traits_using(
+    basic_string_view<CharT, Traits> const& view
+) {
+    return basic_string_view<CharT>(view.data(), view.size());
+}
+
+
 }
 
 
