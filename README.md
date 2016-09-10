@@ -35,7 +35,7 @@ tool chain is required. We recommend using clang-3.8 or gcc-5.3 or later.
 Installation
 ------------
 
-Installation is done using CMake. Run
+Installation is done using [CMake](http://cmake.org). Run
 
 ```
 cmake <path-to-source>
@@ -45,7 +45,8 @@ in the directory in which you indent to set up the library. In-tree builds are
 supported (supply `.` as the source directory).
 
 The examples can also be build using CMake. Once you have initialized the build
-environment, run `make examples`.
+environment, run `make examples`. Additional information regarding build targets
+and the installation process can be found in the user documentation.
 
 
 Licensing
