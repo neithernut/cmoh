@@ -183,7 +183,7 @@ public:
         optional<Type> retval;
 
         visit_attributes<Type>([&] (auto accessor) {
-            if (cmoh::accessors::key(accessor) != key)
+            if (!(cmoh::accessors::key(accessor) == key))
                 return;
             retval = accessor.get(obj);
         });
@@ -207,7 +207,7 @@ public:
         bool retval = false;
 
         visit_attributes<Type>([&] (auto accessor) {
-            if (cmoh::accessors::key(accessor) != key)
+            if (!(cmoh::accessors::key(accessor) == key))
                 return;
             accessor.set(obj, std::forward<Type>(value));
             retval = true;
