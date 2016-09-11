@@ -353,32 +353,193 @@ operator << (
 
 
 namespace cmoh {
-    typedef basic_string_view<char> string_view;
-    typedef basic_string_view<wchar_t> wstring_view;
-    typedef basic_string_view<char16_t> u16string_view;
-    typedef basic_string_view<char32_t> u32string_view;
+
+
+typedef basic_string_view<char> string_view;
+typedef basic_string_view<wchar_t> wstring_view;
+typedef basic_string_view<char16_t> u16string_view;
+typedef basic_string_view<char32_t> u32string_view;
+
+
+/**
+ * Create a string view with the standard char traits
+ */
+template <
+    typename CharT,
+    typename Traits
+>
+constexpr
+basic_string_view<CharT, std::char_traits<CharT>>
+std_traits_using(
+    basic_string_view<CharT, Traits> const& view
+) {
+    return basic_string_view<CharT, std::char_traits<CharT>>(
+        view.data(),
+        view.size()
+    );
 }
 
 
-// workaround to interface our custom char traits with the outside world
+/**
+ * Create a string view with the cmoh char traits
+ */
+template <
+    typename CharT,
+    typename Traits
+>
+constexpr
+basic_string_view<CharT>
+cmoh_traits_using(
+    basic_string_view<CharT, Traits> const& view
+) {
+    return basic_string_view<CharT>(view.data(), view.size());
+}
+
+
+}
+
+
+// workarounds to interface our custom char traits with the outside world
+template<
+    class CharT
+>
+constexpr bool operator == (
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> rhs
+) noexcept {
+    return lhs == cmoh_traits_using(rhs);
+}
+
+template<
+    class CharT
+>
+constexpr bool operator == (
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> rhs
+) noexcept {
+    return cmoh_traits_using(lhs) == rhs;
+}
+
+
+template<
+    class CharT,
+    class Traits
+>
+constexpr bool operator != (
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> rhs
+) noexcept {
+    return lhs != cmoh_traits_using(rhs);
+}
+
+template<
+    class CharT
+>
+constexpr bool operator != (
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> rhs
+) noexcept {
+    return cmoh_traits_using(lhs) != rhs;
+}
+
+
+template<
+    class CharT,
+    class Traits
+>
+constexpr bool operator < (
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> rhs
+) noexcept {
+    return lhs < cmoh_traits_using(rhs);
+}
+
+template<
+    class CharT
+>
+constexpr bool operator < (
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> rhs
+) noexcept {
+    return cmoh_traits_using(lhs) < rhs;
+}
+
+
+template<
+    class CharT,
+    class Traits
+>
+constexpr bool operator <= (
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> rhs
+) noexcept {
+    return lhs <= cmoh_traits_using(rhs);
+}
+
+template<
+    class CharT
+>
+constexpr bool operator <= (
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> rhs
+) noexcept {
+    return cmoh_traits_using(lhs) <= rhs;
+}
+
+
+template<
+    class CharT,
+    class Traits
+>
+constexpr bool operator > (
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> rhs
+) noexcept {
+    return lhs > cmoh_traits_using(rhs);
+}
+
+template<
+    class CharT
+>
+constexpr bool operator > (
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> rhs
+) noexcept {
+    return cmoh_traits_using(lhs) > rhs;
+}
+
+
+template<
+    class CharT,
+    class Traits
+>
+constexpr bool operator >= (
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> rhs
+) noexcept {
+    return lhs >= cmoh_traits_using(rhs);
+}
+
+template<
+    class CharT
+>
+constexpr bool operator >= (
+    cmoh::basic_string_view<CharT,  std::char_traits<CharT>> lhs,
+    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> rhs
+) noexcept {
+    return cmoh_traits_using(lhs) >= rhs;
+}
+
+
 template <
     class CharT
 >
 std::basic_ostream<CharT, std::char_traits<CharT>>&
 operator << (
-    std::basic_ostream<CharT, std::char_traits<CharT>>& stream,
-    cmoh::basic_string_view<CharT, cmoh::char_traits<CharT>> view
+    std::basic_ostream<CharT>& stream,
+    cmoh::basic_string_view<CharT> view
 ) {
-    auto len = view.size();
-    auto pos = view.data();
-
-    while (len > 0) {
-        stream.put(*pos);
-        ++pos;
-        --len;
-    }
-
-    return stream;
+    return stream << std_traits_using(view);
 }
 
 
