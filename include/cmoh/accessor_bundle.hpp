@@ -46,7 +46,9 @@ namespace cmoh {
  * Instantiations of this template bundle accessors and make them conveniently
  * accessible as a group, posing as an abstraction layer.
  *
- * TODO: further explanation
+ * In an accessor bundle, accessors are typically addressed using the accessed
+ * property's key. For each type of property, the bundle contains access
+ * methods (e.g. getters and setters for attributes).
  *
  * Users are discouraged from constructing accessor bundles directly. Use
  * `bundle()` instead as a factory.
