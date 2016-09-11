@@ -46,10 +46,12 @@ namespace cmoh {
  * Instantiations of this template bundle accessors and make them conveniently
  * accessible as a group, posing as an abstraction layer.
  *
- * TODO: further explanation
+ * In an accessor bundle, accessors are typically addressed using the accessed
+ * property's key. For each type of property, the bundle contains access
+ * methods (e.g. getters and setters for attributes).
  *
  * Users are discouraged from constructing accessor bundles directly. Use
- * `bundle()` instread as a factory.
+ * `bundle()` instead as a factory.
  */
 template <
     typename ...Accessors
@@ -181,7 +183,7 @@ public:
         optional<Type> retval;
 
         visit_attributes<Type>([&] (auto accessor) {
-            if (cmoh::accessors::key(accessor) != key)
+            if (!(cmoh::accessors::key(accessor) == key))
                 return;
             retval = accessor.get(obj);
         });
@@ -205,7 +207,7 @@ public:
         bool retval = false;
 
         visit_attributes<Type>([&] (auto accessor) {
-            if (cmoh::accessors::key(accessor) != key)
+            if (!(cmoh::accessors::key(accessor) == key))
                 return;
             accessor.set(obj, std::forward<Type>(value));
             retval = true;
