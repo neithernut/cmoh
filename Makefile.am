@@ -18,3 +18,8 @@ cmoh_accessors_attribute_HEADERS = include/cmoh/accessors/attribute/*.hpp
 cmoh_accessors_factorydir = $(cmohdir)/accessors/attribute/
 cmoh_accessors_factory_HEADERS = include/cmoh/accessors/factory/*.hpp
 
+
+# pkg-config file
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = cmoh.pc
+

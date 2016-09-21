@@ -20,5 +20,6 @@ AC_CHECK_TYPES([ptrdiff_t])
 
 AC_CONFIG_FILES([
     Makefile
+    cmoh.pc
 ])
 AC_OUTPUT
