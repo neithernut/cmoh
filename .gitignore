@@ -1,11 +1,4 @@
-# Ignore stuff CMake produces
-CMakeCache.txt
-CMakeFiles
-CTestTestfile.cmake
+# ignore the generated Makefile and compilation/processing products
 Makefile
-Testing
-cmake_install.cmake
-install_manifest.txt
-
-# ignore PC file
+*.o
 *.pc
