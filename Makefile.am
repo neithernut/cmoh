@@ -31,6 +31,29 @@ pkgconfig_DATA = cmoh.pc
 
 
 #
+# DOCUMENTATION
+#
+
+# the files making up the documentation, in the order they are meant to be read
+documentation_files = \
+	doc/Introduction.md \
+	doc/Motivation.md \
+	doc/Usage.md \
+	doc/Properties.md \
+	doc/Factories.md \
+	doc/AccessorBundle.md \
+	doc/Utilities.md \
+	doc/Installation.md \
+	doc/Licensing.md \
+	doc/metadata.yaml
+
+userdoc.pdf: $(documentation_files)
+	$(PANDOC) -o $@ --toc --chapters $^
+
+pdf: userdoc.pdf
+
+
+#
 # EXAMPLES
 #
 example_programs = \

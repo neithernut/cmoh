@@ -16,8 +16,9 @@ missing
 test-driver
 
 # ignore the generated Makefile and compilation/processing products
-Makefile
 *.o
 *.pc
+*.pdf
 *.smoke
+Makefile
 
