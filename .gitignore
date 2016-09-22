@@ -19,3 +19,5 @@ test-driver
 Makefile
 *.o
 *.pc
+*.smoke
+

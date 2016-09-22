@@ -6,17 +6,23 @@
 #
 # this is a bit cumbersome, since we cannot use nobase_ without having a
 # Makefile.am in include/ --which we decided against.
+cmoh_includes =
+
 cmohdir = $(includedir)/cmoh
 cmoh_HEADERS = include/cmoh/*.hpp
+cmoh_includes += $(cmoh_HEADERS)
 
 cmoh_accessorsdir = $(cmohdir)/accessors/
 cmoh_accessors_HEADERS = include/cmoh/accessors/*.hpp
+cmoh_includes += $(cmoh_accessors_HEADERS)
 
 cmoh_accessors_attributedir = $(cmohdir)/accessors/attribute/
 cmoh_accessors_attribute_HEADERS = include/cmoh/accessors/attribute/*.hpp
+cmoh_includes += $(cmoh_accessors_attribute_HEADERS)
 
 cmoh_accessors_factorydir = $(cmohdir)/accessors/attribute/
 cmoh_accessors_factory_HEADERS = include/cmoh/accessors/factory/*.hpp
+cmoh_includes += $(cmoh_accessors_factory_HEADERS)
 
 
 # pkg-config file
@@ -52,4 +58,16 @@ examples_dynamic_key_example_SOURCES = \
 examples_string_key_example_SOURCES = \
 	examples/string_key_example.cpp \
 	examples/person.cpp
+
+
+#
+# DEPENDENCY TESTS
+#
+cmoh_smoke_test_files = $(addsuffix .smoke,$(wildcard $(cmoh_includes)))
+check_PROGRAMS += test/smoke
+test_smoke_DEPENDENCIES = $(cmoh_smoke_test_files)
+
+# hack to make the compiler look at each header file
+$(cmoh_smoke_test_files): %.smoke: %
+	$(CXXCOMPILE) -c -o $@ -x c++ - < $<
 
