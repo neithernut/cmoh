@@ -20,5 +20,6 @@ test-driver
 *.pc
 *.pdf
 *.smoke
+*.tar.gz
 Makefile
 

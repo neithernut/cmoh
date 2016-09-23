@@ -94,3 +94,22 @@ test_smoke_DEPENDENCIES = $(cmoh_smoke_test_files)
 $(cmoh_smoke_test_files): %.smoke: %
 	$(CXXCOMPILE) -c -o $@ -x c++ - < $<
 
+
+#
+# MISC
+#
+
+# cleaning
+MOSTLYCLEANFILES = userdoc.pdf
+CLEANFILES = $(cmoh_smoke_test_files)
+
+
+# things to distribute in a source tarball
+EXTRA_DIST = \
+	$(documentation_files) \
+	Changelog.md \
+	LICENSE \
+	README.md \
+	doc/README.md \
+	examples/README.md
+
