@@ -19,10 +19,9 @@ Currently, CMOH is in early development. However, a preliminary user
 Using this library
 ------------------
 
-As this is a header-only library, no linking is required. Both a CMake module
-and a pkg-config-file are installed along with the header files. The library is
-called "cmoh" in both cases. If you are using neither CMake nor pkg-config-based
-setups, add `<installation_prefix>/include` to your include directories.
+As this is a header-only library, no linking is required. A pkg-config-file
+`cmoh.pc` is installed along with the library. If you are not using
+`pkg-config`, add `<installation_prefix>/include` to your include directories.
 
 
 Dependencies
@@ -30,23 +29,38 @@ Dependencies
 
 CMOH makes heavy use of templates and C++14 features. Hence, a C++14 compliant
 tool chain is required. We recommend using clang-3.8 or gcc-5.3 or later.
+Additionally, the following packages are required for installation:
+ * `make`
+ * `sh`
+ * a number of smaller packages, which are usually part of a regular
+   installation on unixoid system
 
+If you obtained CMOH without a pre-generated `configure`-script, you may also
+require
+ * `autoconf`
+ * `automake`
 
 Installation
 ------------
 
-Installation is done using [CMake](http://cmake.org). Run
+Our build/installation setup is based on the autotools.
+If you obtained CMOH without a pre-generated `configure` script, run
 
-```
-cmake <path-to-source>
-make install
-```
-in the directory in which you indent to set up the library. In-tree builds are
-supported (supply `.` as the source directory).
+    aclocal
+    autoconf
+    automake --add-missing
 
-The examples can also be build using CMake. Once you have initialized the build
-environment, run `make examples`. Additional information regarding build targets
-and the installation process can be found in the user documentation.
+on a machine on which the autotools are installed. If the procedure was
+successful, the project's root directory will contain a `configure` script.
+If the project root contains a `configure` script, you can proceed by running
+
+    ./configure
+    make install
+
+in the project's root directory.
+
+Additional information regarding build targets and the installation process can
+be found in the user documentation.
 
 
 Licensing
