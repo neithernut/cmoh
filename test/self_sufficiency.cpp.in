@@ -1,6 +1,0 @@
-#include <cmoh/@HEADER_FILE@>
-
-int main(int argc, char* argv[]) {
-    return 0;
-}
-
