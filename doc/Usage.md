@@ -7,10 +7,12 @@ heavy use of (variadic) templates and C++14 features. Hence, a C++14 compliant
 tool chain is required with a certain set of capabilities. Clang-3.8 or gcc-5.3
 or later are recommended.
 
-Both a CMake module and a pkg-config-file are installed along with the library.
-In both cases, the packet is called "cmoh". If you are using neither CMake nor
-pkg-config-based setups, add `<installation_prefix>/include` to your include
-directories.
+A pkg-config-file is installed along with the library. Run
+
+    pkg-config --cflags cmoh
+
+to obtain a number of compiler flags required. If you are not using
+`pkg-config`, add `<installation_prefix>/include` to your include directories.
 
 
 Using CMOH in embedded and/or constrained environments
