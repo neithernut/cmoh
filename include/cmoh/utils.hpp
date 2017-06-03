@@ -304,6 +304,33 @@ invoke(
 }
 
 
+/**
+ * Predeclaration of C++17 std::invocable
+ *
+ * Determine whether a function can be invoked with a provided list of srguments
+ * using `invoke()`.
+ */
+template <
+    typename Func,
+    typename ...Args
+>
+struct is_invocable {
+private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper : std::false_type {};
+
+    template <typename T>
+    struct helper<
+        T, void_t<decltype(invoke(std::declval<T>(), std::declval<Args>()...))>
+    > : std::true_type {};
+public:
+    enum : bool {value = helper<Func>::value};
+};
+
+
 }
 }
 
