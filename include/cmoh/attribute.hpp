@@ -31,7 +31,7 @@
 
 
 // local includes
-#include <cmoh/accessors/attribute/by_method.hpp>
+#include <cmoh/accessors/attribute/by_invocable.hpp>
 #include <cmoh/accessors/attribute/by_offset.hpp>
 
 
