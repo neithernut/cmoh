@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Julian Ganz
+ * Copyright (c) 2016, 2017 Julian Ganz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@
 #define CMOH_UTILS_HPP__
 
 #include <type_traits>
+#include <utility>
 
 
 namespace cmoh {
@@ -204,6 +205,103 @@ private:
 public:
     enum : bool {value = helper<Type>::value};
 };
+
+
+/**
+ * Partial predeclaration of C++17 std::invoke()
+ *
+ * This overloaded function is a partial predeclaration of the C++17 STL
+ * function `std::invoke()`. Unlike in the C++17 version,
+ * `std::reference_wrapper<>` types are not supported as first arguments.
+ */
+template <
+    typename Func,
+    typename ...Args
+>
+typename std::enable_if<
+    is_callable_with<Func, Args...>::value,
+    decltype(std::declval<Func>()(std::declval<Args>()...))
+>::type
+invoke(
+    Func&& func,
+    Args&&... args
+) {
+    return std::forward<Func>(func)(std::forward<Args>(args)...);
+}
+
+// Specialization for methods invoked on a regular object
+template <
+    typename Func,
+    typename Class,
+    typename Arg0,
+    typename ...Args
+>
+typename std::enable_if<
+    std::is_member_function_pointer<Func Class::*>::value &&
+    std::is_base_of<Class, typename std::decay<Arg0>::type>::value,
+    decltype((std::declval<Arg0>().*std::declval<Func Class::*>())(std::declval<Args>()...))
+>::type
+invoke(
+    Func Class::* func,
+    Arg0&& arg0,
+    Args&&... args
+) {
+    return (std::forward<Arg0>(arg0).*func)(std::forward<Args>(args)...);
+}
+
+// Specialization for methods invoked on an intermediate referring to the object
+template <
+    typename Func,
+    typename Class,
+    typename Arg0,
+    typename ...Args
+>
+typename std::enable_if<
+    std::is_member_function_pointer<Func Class::*>::value,
+    decltype(((*std::declval<Arg0>()).*std::declval<Func Class::*>())(std::declval<Args>()...))
+>::type
+invoke(
+    Func Class::* func,
+    Arg0&& arg0,
+    Args&&... args
+) {
+    return ((*std::forward<Arg0>(arg0)).*func)(std::forward<Args>(args)...);
+}
+
+// Specialization for attributes invoked on a regular object
+template <
+    typename Member,
+    typename Class,
+    typename Arg
+>
+typename std::enable_if<
+    std::is_member_object_pointer<Member Class::*>::value &&
+    std::is_base_of<Class, Arg>::value,
+    decltype(std::declval<Arg>().*std::declval<Member>())
+>::type
+invoke(
+    Member Class::* member,
+    Arg&& arg
+) {
+    return std::forward<Arg>(arg).*member;
+}
+
+// Specialization for attributes invoked on an intermediate referring to the object
+template <
+    typename Member,
+    typename Class,
+    typename Arg
+>
+typename std::enable_if<
+    std::is_member_object_pointer<Member Class::*>::value,
+    decltype((*std::declval<Arg>()).*std::declval<Member>())
+>::type
+invoke(
+    Member Class::* member,
+    Arg&& arg
+) {
+    return (*std::forward<Arg>(arg)).*member;
+}
 
 
 }
