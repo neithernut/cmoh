@@ -153,6 +153,50 @@ private:
 };
 
 
+// accessor factory overlaods for the `cmoh::accessor::attribute::by_invocable`
+template <
+    typename Attribute, ///< attribute being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename Value, ///< type of the value in the concrete C++ type
+    typename Getter ///< type of the getter
+>
+constexpr
+typename std::enable_if<
+    Attribute::is_const && util::is_invocable<Getter, ObjType>::value,
+    by_invocable_const<Attribute, ObjType, Getter>
+>::type
+make_accessor(
+    Getter&& getter
+) {
+    return by_invocable_const<Attribute, ObjType, Getter>(
+        std::forward<Getter>(getter)
+    );
+}
+
+template <
+    typename Attribute, ///< attribute being accessed
+    typename ObjType, ///< type of the class or struct with the attribute
+    typename Value, ///< type of the value in the concrete C++ type
+    typename Getter, ///< type of the getter
+    typename Setter ///< type of the setter
+>
+constexpr
+typename std::enable_if<
+    util::is_invocable<Getter, ObjType>::value &&
+    util::is_invocable<Setter, ObjType, typename Attribute::type>::value,
+    by_invocable<Attribute, ObjType, Getter, Setter>
+>::type
+make_accessor(
+    Getter getter,
+    Setter setter
+) {
+    return by_invocable<Attribute, ObjType, Getter, Setter>(
+        std::forward<Getter>(getter),
+        std::forward<Setter>(setter)
+    );
+}
+
+
 }
 }
 }
