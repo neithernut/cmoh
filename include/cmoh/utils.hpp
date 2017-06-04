@@ -182,6 +182,30 @@ struct common_type<void> {
 };
 
 
+/**
+ * Check whether a value is an object callable with a number of arguments
+ *
+ */
+template <
+    typename Type,
+    typename ...Args
+>
+struct is_callable_with {
+private:
+    template <
+        typename T,
+        typename = void
+    >
+    struct helper : std::false_type {};
+
+    template <typename T>
+    struct helper<T, void_t<decltype(std::declval<T>()(std::declval<Args>()...))>> :
+        std::true_type {};
+public:
+    enum : bool {value = helper<Type>::value};
+};
+
+
 }
 }
 
