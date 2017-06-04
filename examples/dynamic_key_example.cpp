@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Julian Ganz
+ * Copyright (c) 2016, 2017 Julian Ganz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,7 @@ using name_attr = cmoh::attribute<int, 1, std::string>;
 int main(int argc, char* argv[]) {
     // We specify how to access the attribute
     auto accessors = bundle(
-        name_attr::accessor<person>(&person::name, &person::set_name)
+        name_attr::accessor<person>(&person::first_name, &person::set_first_name)
     );
 
     // We create a new person to play with
