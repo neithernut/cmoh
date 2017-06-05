@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Julian Ganz
+ * Copyright (c) 2016, 2017 Julian Ganz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,13 +41,17 @@ public:
     person(person const&) = default;
     person(person&&) = default;
 
-    std::string name() const;
-    void set_name(std::string const& name);
+    std::string first_name() const;
+    void set_first_name(std::string const& name);
+
+    std::string last_name() const;
+    void set_last_name(std::string const& name);
 
     std::chrono::hours age() const;
 
 private:
-    std::string _name;
+    std::string _first_name;
+    std::string _last_name;
     std::chrono::system_clock::time_point _birthday;
 };
 

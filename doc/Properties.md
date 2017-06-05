@@ -80,32 +80,22 @@ be `const` in this case.
 The following overloads to the `accessor()` factory provided by attributes
 exist. However, some are available for const/non-const attributes only:
  *      accessor<typename ObjType>(
-            Value(ObjType::* getter)(),
-            void(ObjType::* setter)(Value)
+            Getter,
+            Setter
         )
-    will create an accessor based on a getter and a setter method which are part
-    of the target type. The type of the `Value` doesn't have to match the
-    attribute type completely, it just has to be implicitly convertible.
+    will create an accessor based on a getter and a setter. Both may either be
+    pointers to methods of the target type, function pointers or callable
+    objects (e.g. lambdas).
+
+    The return parameter of the getter is implicitly converted to the attribute
+    type. Likewise, the "value" parameter of the setter may have any type which
+    is implicitly convertible from the attribute type.
 
  *      accessor<typename ObjType>(
-            Value(ObjType::* getter)(),
-            void(ObjType::* setter)(Value const&)
-        )
-    will create a similar accessor, except that the setter will be required to
-    take a const reference instead of a value.
-
- *      accessor<typename ObjType>(
-            Value(ObjType::* getter)(),
-            void(ObjType::* setter)(Value&&)
-        )
-    will create a similar accessor, except that the setter will be required to
-    take a rvalue reference.
-
- *      accessor<typename ObjType>(
-            GetterValue(ObjType::* getter)()
+            Getter
         )
     will create an accessor based on only a getter of the target type. Otherwise
-    it behaves as the variants also taking a setter.
+    it behaves as the variant also taking a setter.
 
  *      accessor<typename ObjType, typename ValueType>(
             std::size_t offset

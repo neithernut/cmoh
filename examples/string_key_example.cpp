@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Julian Ganz
+ * Copyright (c) 2016, 2017 Julian Ganz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,14 +47,16 @@
 // The `cmoh::string_view` can be used for string keys. It's an adapted
 // string view with compile time capabilities lacking in the STL version.
 extern constexpr const cmoh::string_view birthday{"birthday"};
-extern constexpr const cmoh::string_view name{"name"};
+extern constexpr const cmoh::string_view first_name{"first_name"};
+extern constexpr const cmoh::string_view last_name{"last_name"};
 extern constexpr const cmoh::string_view age{"age"};
 
 // As the attribute type, use `cmoh::string_view const&`. Otherwise, the string
 // views can be used just like enumeration and integral keys.
 using birthday_attr = cmoh::attribute<cmoh::string_view const&, birthday,
     const std::chrono::system_clock::time_point>;
-using name_attr = cmoh::attribute<cmoh::string_view const&, name, std::string>;
+using first_name_attr = cmoh::attribute<cmoh::string_view const&, first_name, std::string>;
+using last_name_attr = cmoh::attribute<cmoh::string_view const&, last_name, std::string>;
 using age_attr = cmoh::attribute<cmoh::string_view const&, age, const std::chrono::hours>;
 
 
@@ -68,15 +70,17 @@ int main(int argc, char* argv[]) {
     // We create an accessor bundle.
     auto accessors = bundle(
         cmoh::factory<person, birthday_attr>(),
-        name_attr::accessor<person>(&person::name, &person::set_name),
+        first_name_attr::accessor<person>(&person::first_name, &person::set_first_name),
+        last_name_attr::accessor<person>(&person::last_name, &person::set_last_name),
         age_attr::accessor<person>(&person::age)
     );
 
     // We can use the constants just like other key types, e.g. for object
     // construction.
-    person p = accessors.create<birthday, name>(
+    person p = accessors.create<birthday, first_name, last_name>(
         std::chrono::system_clock::now() - std::chrono::hours(24),
-        "Hans"
+        "Hans",
+        "Wurst"
     );
 
     // Having strings, we can pretty-print the object using a visitor.
@@ -89,7 +93,7 @@ int main(int argc, char* argv[]) {
     std::cout << std::endl;
 
     // we can also address properties using strings at run time
-    assert(accessors.set<std::string>(p, std::string("name"), "Hans Wurst"));
+    assert(accessors.set<std::string>(p, std::string("first_name"), "Henrick"));
     accessors.visit_properties(printer);
 
     return 0;
