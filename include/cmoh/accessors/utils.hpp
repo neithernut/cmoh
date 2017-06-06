@@ -135,7 +135,7 @@ private:
 
     template <typename T>
     struct helper<T, attribute_accessor> {
-        typedef typename T::attribute type;
+        typedef typename T::property type;
     };
 
 public:

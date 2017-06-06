@@ -55,7 +55,7 @@ template <
     typename Getter ///< type of the getter
 >
 struct by_invocable_const {
-    typedef Attribute attribute; ///< type of attribute being accessed
+    typedef Attribute property; ///< type of property being accessed
     typedef ObjType object_type; ///< object being accessed
 
     typedef Getter getter; // type of the getter used
@@ -69,7 +69,7 @@ struct by_invocable_const {
     static_assert(
         std::is_convertible<
             decltype(util::invoke(std::declval<getter>(), std::declval<object_type>())),
-            typename attribute::type
+            typename property::type
         >::value,
         "Value returned by getter is not convertible to attribute type"
     );
@@ -85,7 +85,7 @@ struct by_invocable_const {
      *
      * \returns the attribute's value
      */
-    typename attribute::type
+    typename property::type
     get(
         object_type const& obj ///< object from which to get the value
     ) const {
@@ -113,7 +113,7 @@ template <
     typename Setter ///< type of the setter
 >
 struct by_invocable : by_invocable_const<Attribute, ObjType, Getter> {
-    typedef Attribute attribute; ///< type of attribute being accessed
+    typedef Attribute property; ///< type of property being accessed
     typedef ObjType object_type; ///< object being accessed
 
     typedef Getter getter; // type of the getter used
@@ -124,7 +124,7 @@ struct by_invocable : by_invocable_const<Attribute, ObjType, Getter> {
         util::is_invocable<
             setter,
             object_type,
-            typename attribute::type
+            typename property::type
         >::value,
         "Getter not invokable with object"
     );
@@ -143,9 +143,9 @@ struct by_invocable : by_invocable_const<Attribute, ObjType, Getter> {
     void
     set(
         object_type& obj, ///< object on which to set the attribute
-        typename attribute::type&& value ///< value to set
+        typename property::type&& value ///< value to set
     ) const {
-        util::invoke(_setter, obj, std::forward<typename attribute::type>(value));
+        util::invoke(_setter, obj, std::forward<typename property::type>(value));
     }
 
 private:
