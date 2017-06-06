@@ -127,39 +127,26 @@ using accessor_type_of = std::integral_constant<
 
 
 /**
- * Query an accessor's underlying type
+ * Query the property associated with an accessor
  *
- * Returns an accessor's underlying property (e.g. the type containing the
- * members `key_type` and `key`) or void via the member `type`.
+ * Returns the property associated with the accessor type passed. If the type is
+ * not an accessor exposing a `property` member type, it may be a property
+ * itself. In this case, the type is returned.
+ *
+ * If the type is neither an accessor nor a property, `void` is returned.
  */
 template <
-    typename Accessor
+    typename Accessible,
+    typename = void
 >
-struct property {
-private:
-    template <
-        typename T,
-        accessor_type acc_type
-    >
-    struct helper {
-        typedef T type;
-    };
+struct property :
+    std::conditional<is_property<Accessible>::value, Accessible, void> {};
 
-    template <typename T>
-    struct helper<T, factory_implementation> {
-        typedef void type;
-    };
-
-    template <typename T>
-    struct helper<T, attribute_accessor> {
-        typedef typename T::property type;
-    };
-
-public:
-    typedef typename helper<
-        Accessor,
-        accessor_type_of<Accessor>::value
-    >::type type;
+template <
+    typename Accessible
+>
+struct property<Accessible, util::void_t<typename Accessible::property>> {
+    typedef typename Accessible::property type;
 };
 
 
