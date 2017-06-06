@@ -100,33 +100,6 @@ struct is_attribute_accessor<
 
 
 /**
- * Enumeration type for detecting different types of accessors
- */
-enum accessor_type {
-    none, ///< not an accessor
-    factory_implementation, ///< a factory
-    attribute_accessor ///< an attribute accessor
-};
-
-
-/**
- * Meta function for querying the accessor type of a type
- *
- * Returns the `accessor_type` associated with the `Accessor` supplied via the
- * `value` member.
- */
-template <
-    typename Accessor
->
-using accessor_type_of = std::integral_constant<
-    accessor_type,
-    is_factory<Accessor>::value ? factory_implementation :
-    is_attribute_accessor<Accessor>::value ? attribute_accessor :
-    none
->;
-
-
-/**
  * Query the property associated with an accessor
  *
  * Returns the property associated with the accessor type passed. If the type is
