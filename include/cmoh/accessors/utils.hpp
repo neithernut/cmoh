@@ -61,7 +61,8 @@ struct is_factory<
 /**
  * Check whether a supposed accessor is an attribute accessor
  *
- * Detection is performed by detecting the `attribute` member.
+ * An attribute accessor has a method `get()` which accepts an object of the
+ * cotnained object_type.
  */
 template <
     typename Accessor, ///< accessor to check
@@ -75,7 +76,9 @@ template <
 >
 struct is_attribute_accessor<
     Accessor,
-    util::void_t<typename Accessor::attribute>
+    util::void_t<decltype(std::declval<Accessor>().get(
+            std::declval<typename Accessor::object_type>()
+    ))>
 > : std::true_type {};
 
 
