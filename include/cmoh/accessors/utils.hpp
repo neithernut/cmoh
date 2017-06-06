@@ -38,6 +38,23 @@ namespace accessors {
 
 
 /**
+ * Check whether a type is an addressable property
+ *
+ * A property has a key which can be retrieved via the `key()` method.
+ */
+template <
+    typename Property,
+    typename = void
+>
+struct is_property : std::false_type {};
+
+template <
+    typename Property
+>
+struct is_property<Property, util::void_t<decltype(Property::key())>> : std::true_type {};
+
+
+/**
  * Check whether a supposed accessor is a factory
  *
  * Detection is performed by detecting the `is_initializable_from` member.
