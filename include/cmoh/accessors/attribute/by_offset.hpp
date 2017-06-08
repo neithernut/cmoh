@@ -52,13 +52,13 @@ template <
     typename Value ///< type of the attribute in the class
 >
 struct by_offset {
-    typedef Attribute attribute; ///< type of attribute being accessed
+    typedef Attribute property; ///< type of property being accessed
     typedef ObjType object_type; ///< object being accessed
     typedef Value value_type; ///< actual type within the object
 
 
     static_assert(
-        std::is_convertible<object_type, typename attribute::type>::value,
+        std::is_convertible<object_type, typename property::type>::value,
         "Attribute type and real type not compatible."
     );
 
@@ -72,7 +72,7 @@ struct by_offset {
      *
      * \returns the attribute's value
      */
-    typename attribute::type
+    typename property::type
     get(
         object_type const& obj ///< object from which to get the value
     ) const {
@@ -87,7 +87,7 @@ struct by_offset {
     void
     set(
         object_type& obj, ///< object on which to set the attribute
-        typename attribute::type&& value ///< value to set
+        typename property::type&& value ///< value to set
     ) const {
         *reinterpret_cast<value_type*>(
             reinterpret_cast<char*>(&obj) + _offset

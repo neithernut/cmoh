@@ -38,6 +38,23 @@ namespace accessors {
 
 
 /**
+ * Check whether a type is an addressable property
+ *
+ * A property has a key which can be retrieved via the `key()` method.
+ */
+template <
+    typename Property,
+    typename = void
+>
+struct is_property : std::false_type {};
+
+template <
+    typename Property
+>
+struct is_property<Property, util::void_t<decltype(Property::key())>> : std::true_type {};
+
+
+/**
  * Check whether a supposed accessor is a factory
  *
  * Detection is performed by detecting the `is_initializable_from` member.
@@ -61,7 +78,8 @@ struct is_factory<
 /**
  * Check whether a supposed accessor is an attribute accessor
  *
- * Detection is performed by detecting the `attribute` member.
+ * An attribute accessor has a method `get()` which accepts an object of the
+ * cotnained object_type.
  */
 template <
     typename Accessor, ///< accessor to check
@@ -75,71 +93,33 @@ template <
 >
 struct is_attribute_accessor<
     Accessor,
-    util::void_t<typename Accessor::attribute>
+    util::void_t<decltype(std::declval<Accessor>().get(
+            std::declval<typename Accessor::object_type>()
+    ))>
 > : std::true_type {};
 
 
 /**
- * Enumeration type for detecting different types of accessors
- */
-enum accessor_type {
-    none, ///< not an accessor
-    factory_implementation, ///< a factory
-    attribute_accessor ///< an attribute accessor
-};
-
-
-/**
- * Meta function for querying the accessor type of a type
+ * Query the property associated with an accessor
  *
- * Returns the `accessor_type` associated with the `Accessor` supplied via the
- * `value` member.
+ * Returns the property associated with the accessor type passed. If the type is
+ * not an accessor exposing a `property` member type, it may be a property
+ * itself. In this case, the type is returned.
+ *
+ * If the type is neither an accessor nor a property, `void` is returned.
  */
 template <
-    typename Accessor
+    typename Accessible,
+    typename = void
 >
-using accessor_type_of = std::integral_constant<
-    accessor_type,
-    is_factory<Accessor>::value ? factory_implementation :
-    is_attribute_accessor<Accessor>::value ? attribute_accessor :
-    none
->;
+struct property :
+    std::conditional<is_property<Accessible>::value, Accessible, void> {};
 
-
-/**
- * Query an accessor's underlying type
- *
- * Returns an accessor's underlying property (e.g. the type containing the
- * members `key_type` and `key`) or void via the member `type`.
- */
 template <
-    typename Accessor
+    typename Accessible
 >
-struct property {
-private:
-    template <
-        typename T,
-        accessor_type acc_type
-    >
-    struct helper {
-        typedef T type;
-    };
-
-    template <typename T>
-    struct helper<T, factory_implementation> {
-        typedef void type;
-    };
-
-    template <typename T>
-    struct helper<T, attribute_accessor> {
-        typedef typename T::attribute type;
-    };
-
-public:
-    typedef typename helper<
-        Accessor,
-        accessor_type_of<Accessor>::value
-    >::type type;
+struct property<Accessible, util::void_t<typename Accessible::property>> {
+    typedef typename Accessible::property type;
 };
 
 

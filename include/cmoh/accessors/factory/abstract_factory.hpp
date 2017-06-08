@@ -52,7 +52,7 @@ struct abstract_factory {
      * The common key type of all attributes used
      */
     typedef typename util::common_type<
-        typename property<Attributes>::type::key_type...
+        typename Attributes::key_type...
     >::type key_type;
 
     /**
