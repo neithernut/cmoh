@@ -31,6 +31,7 @@
 
 
 // local includes
+#include <cmoh/accessors/method.hpp>
 #include <cmoh/utils.hpp>
 
 
@@ -67,6 +68,29 @@ struct method {
     typename std::remove_reference<key_type>::type
     key() {
         return Key;
+    }
+
+
+    /**
+     * Get an accessor for the method
+     *
+     * This methos creates a new accessor using the facilities passed to it.
+     * That accessor may be used to call the method of a concrete C++
+     * struct or class of type `ObjType`.
+     */
+    template <
+        typename ObjType, ///< type of the class or struct with the attribute
+        typename... Args ///< arguments forwarded to the factory
+    >
+    static
+    constexpr
+    auto
+    accessor(
+        Args&&... args
+    ) {
+        return accessors::method::make_accessor<method, ObjType>(
+            std::forward<Args>(args)...
+        );
     }
 };
 
