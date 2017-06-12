@@ -62,6 +62,18 @@ struct method {
         return Key;
     }
 };
+
+
+// convenience specialization, so you can declare a method using function type
+// notation
+template <
+    typename KeyType,
+    KeyType Key,
+    typename ReturnType,
+    typename ...Arguments
+>
+struct method<KeyType, Key, ReturnType(Arguments...)> :
+    method<KeyType, Key, ReturnType, Arguments...> {};
 }
 
 
