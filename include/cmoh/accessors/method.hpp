@@ -120,6 +120,23 @@ private:
 };
 
 
+// accessor factory overlaods for the `cmoh::accessor::method::invocable`
+template <
+    typename Method, ///< method being accessed
+    typename ObjType, ///< type of the class or struct affected
+    typename Func ///< type of the invoable implementing the method
+>
+constexpr
+auto
+make_accessor(
+    Func&& func
+) {
+    return invocable<Method, ObjType, Func>(
+        std::forward<Func>(func)
+    );
+}
+
+
 }
 }
 }
