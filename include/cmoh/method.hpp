@@ -40,8 +40,8 @@ namespace cmoh {
  * accessible to the cmoh system. Use like:
  *
  *     enum methods {foo, bar};
- *     using foo_attr = cmoh::method<methods, foo, int>;
- *     using bar_attr = cmoh::method<methods, bar, int>;
+ *     using foo_attr = cmoh::method<methods, foo, false, void, int>;
+ *     using bar_attr = cmoh::method<methods, bar, true, int(std::string)>;
  *
  */
 template <
