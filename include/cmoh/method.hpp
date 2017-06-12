@@ -30,6 +30,10 @@
 #include <utility>
 
 
+// local includes
+#include <cmoh/utils.hpp>
+
+
 namespace cmoh {
 
 
@@ -47,12 +51,15 @@ namespace cmoh {
 template <
     typename KeyType, ///< type of the key used to identify the method
     KeyType Key, ///< identifier of the method
+    bool Mutates, ///< indicator whether the method may mutate the object or not
     typename ReturnType, ///< return type of the method
     typename ...Arguments ///< types of arguments pased to the method
 >
 struct method {
     typedef KeyType key_type;
     typedef ReturnType return_type;
+    typedef util::types<Arguments...> arguments;
+    enum : bool { mutates = Mutates };
 
 
     static
@@ -69,11 +76,12 @@ struct method {
 template <
     typename KeyType,
     KeyType Key,
+    bool Mutates,
     typename ReturnType,
     typename ...Arguments
 >
-struct method<KeyType, Key, ReturnType(Arguments...)> :
-    method<KeyType, Key, ReturnType, Arguments...> {};
+struct method<KeyType, Key, Mutates, ReturnType(Arguments...)> :
+    method<KeyType, Key, Mutates, ReturnType, Arguments...> {};
 }
 
 
