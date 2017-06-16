@@ -99,6 +99,24 @@ private:
         helper(helper const&) = default;
         helper(helper&&) = default;
 
+        static_assert(
+            util::is_invocable<func, object_type, Args...>::value,
+            "Function not invokable with object and arguments"
+        );
+
+        static_assert(
+            std::is_convertible<
+                decltype(util::invoke(
+                    std::declval<func>(),
+                    std::declval<object_type>(),
+                    std::declval<Args>()...
+                )),
+                typename property::return_type
+            >::value,
+            "Return type of function is not convertible to method return type"
+        );
+
+
         typename property::return_type
         operator ()(
             object_ref_type obj,
