@@ -33,6 +33,19 @@ namespace util {
 
 
 /**
+ * Template for encapsulating a list of types
+ *
+ * This template has the only purpose of encapsulating a list of types.
+ * It may be used, for example, for declaring a member type in a struct in
+ * variadic templates.
+ */
+template <
+    typename ...Types
+>
+struct types {};
+
+
+/**
  * Count the number of arguments in a template parameter pack
  *
  * Instantiations of this struct will contain a static member `value`, which
